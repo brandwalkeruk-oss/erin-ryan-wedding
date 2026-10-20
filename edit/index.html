@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Edit the wedding website</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400&family=Jost:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;background:#f5f0e4;color:#2e3828;
+    font-family:'Jost',system-ui,sans-serif;padding:20px;box-sizing:border-box}
+  .card{background:#fff;border-radius:14px;padding:34px 30px;max-width:420px;width:100%;text-align:center;box-shadow:0 20px 50px -25px rgba(30,35,24,.35)}
+  h1{font-family:'Fraunces',serif;font-weight:400;font-size:1.8rem;margin:0 0 .3em}
+  p{margin:.4em 0;line-height:1.5}
+  #status{color:#6e7a62;min-height:1.5em}
+  #err{color:#a3262a;font-size:.9rem;white-space:pre-wrap;margin-top:12px}
+  button{margin-top:18px;border:0;border-radius:999px;padding:12px 26px;font:500 15px 'Jost',system-ui,sans-serif;background:#8b1a3a;color:#fff;cursor:pointer}
+  a{color:#8b1a3a}
+  .small{font-size:.85rem;color:#6e7a62;margin-top:18px}
+</style>
+<!-- Netlify login widget v2.0.3 (MIT) -->
+<script src="/js/netlify-identity-widget.js"></script>
+</head>
+<body>
+<div class="card">
+  <h1>Website editor</h1>
+  <p id="status">Starting up…</p>
+  <button id="loginBtn" hidden>Log in</button>
+  <div id="err"></div>
+  <p class="small">Prefer forms? Use the <a href="/admin/">full editor</a>.</p>
+</div>
+<script>
+// A simple, standalone login page for the on-page editor.
+// After logging in it sends you to the website, where the "Edit page" button appears.
+const status=t=>document.getElementById('status').textContent=t;
+const errBox=t=>document.getElementById('err').textContent+=t+'\n';
+const btn=document.getElementById('loginBtn');
+window.addEventListener('error',e=>errBox('Error: '+(e.message||e)));
+let started=false;
+function goToSite(){status('Logged in ✓ Taking you to the website…');setTimeout(()=>location.href='/',800);}
+function ready(user){
+  if(started)return;started=true;
+  if(user){goToSite();return;}
+  status('Please log in with your email and password.');
+  btn.hidden=false;
+  btn.onclick=()=>netlifyIdentity.open('login');
+  netlifyIdentity.on('login',()=>{netlifyIdentity.close();goToSite();});
+  netlifyIdentity.on('error',e=>errBox('Login error: '+(e&&e.message||e)));
+  netlifyIdentity.open('login');
+}
+if(!window.netlifyIdentity){
+  status('The login system could not load.');
+  errBox('Turn off any ad or tracker blocker for this site, then reload the page.');
+}else{
+  netlifyIdentity.on('init',ready);
+  // backup: if the widget doesn't report in, check directly
+  setTimeout(()=>{
+    if(started)return;
+    try{const u=netlifyIdentity.currentUser();if(u)ready(u);else{netlifyIdentity.init();setTimeout(()=>{if(!started)ready(null);},1500);}}
+    catch(e){errBox('Startup error: '+e.message);}
+  },2500);
+}
+</script>
+</body>
+</html>
