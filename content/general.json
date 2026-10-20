@@ -1,31 +1,31 @@
 {
-  "page_title": "Erin & Ryan · 20 August 2027 · Umbria, Italy",
-  "name_1": "Erin",
-  "name_2": "Ryan",
-  "countdown_to": "2027-08-20T15:00",
-  "hero_image": "/images/hero.jpg",
   "hero_eyebrow": "You're invited",
+  "page_title": "Erin & Ryan · 20 August 2027 · Umbria, Italy",
+  "countdown_to": "2027-08-20T17:00",
   "hero_tagline": "are getting married in the hills of Umbria",
-  "hero_location": "20 August 2027 · Tenuta di Forte Sorgnano · Umbria",
-  "welcome_eyebrow": "An invitation",
   "welcome_text": "We're gathering the people we love most for three golden days in the heart of *Umbria* — a thousand-year-old castle, long Italian dinners, sunshine by the pool, and one very big *\"I do.\"*",
+  "welcome_eyebrow": "An invitation",
+  "banner": {
+    "heading": "Limoncello o'clock somewhere in Umbria",
+    "text": "Cold glasses, warm evenings and the sound of cicadas. The estate's terrace was made for this."
+  },
   "welcome_subtext": "We can't wait to celebrate with you.",
-  "welcome_signature": "Erin & Ryan",
   "strip_text": "Drinks, limoncello & dancing under the Umbrian stars — join us for the full weekend",
+  "hero_image": "/images/hero.jpg",
+  "hero_location": "20 August 2027 · Tenuta di Forte Sorgnano · Umbria",
+  "welcome_signature": "Erin & Ryan",
+  "footer": {
+    "date_line": "20 · 08 · 2027 — Umbria, Italia",
+    "venue_name": "Tenuta di Forte Sorgnano",
+    "address": "Via Cerquiglino 62 · Gualdo Cattaneo (PG)",
+    "credit": "Made with love · 2027"
+  },
   "landscape": {
     "image": "https://images.unsplash.com/photo-1664465910108-c4261af970c1?w=1400&q=85&auto=format&fit=crop",
     "eyebrow": "Green heart of Italy",
     "heading": "The Hills of Umbria",
     "text": "Cypress trees, olive groves, medieval hilltops and a slower pace of life. August in Umbria is golden in every sense of the word."
   },
-  "banner": {
-    "heading": "Limoncello o'clock somewhere in Umbria",
-    "text": "Cold glasses, warm evenings and the sound of cicadas. The estate's terrace was made for this."
-  },
-  "footer": {
-    "date_line": "20 · 08 · 2027 — Umbria, Italia",
-    "venue_name": "Tenuta di Forte Sorgnano",
-    "address": "Via Cerquiglino 62 · Gualdo Cattaneo (PG)",
-    "credit": "Made with love · 2027"
-  }
+  "name_1": "Erin",
+  "name_2": "Ryan"
 }
