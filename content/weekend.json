@@ -1,0 +1,43 @@
+{
+  "eyebrow": "The Weekend",
+  "heading": "What's On",
+  "intro": "Three days of celebration. Come for the wedding, stay for the everything around it.",
+  "days": [
+    {
+      "day_number": "19",
+      "weekday": "Thursday",
+      "month": "August",
+      "title": "Welcome Party",
+      "icon": "drinks",
+      "featured": false,
+      "description": "Check in from 16:00 — Erin & Ryan will already be there, so come whenever suits you. The evening kicks off with freshly made pizzas from 19:30 (tbc) on the estate.",
+      "details": "Check-in from 16:00 · Pizza from 19:30 (tbc) · Estate terrace",
+      "note": "",
+      "tag": "Limoncello hour"
+    },
+    {
+      "day_number": "20",
+      "weekday": "Friday",
+      "month": "August",
+      "title": "The Wedding",
+      "icon": "heart",
+      "featured": true,
+      "description": "The reason we're all here. The ceremony begins around 16:30–17:00 (tbc), followed by an aperitivo hour, dinner, dancing and an evening snack. Full menu to follow closer to the time. Party until 01:00.",
+      "details": "Ceremony ~16:30–17:00 (tbc) · Aperitivo · Dinner · Dancing · Until 01:00",
+      "note": "There's a restaurant and bar on site, and most apartments have a kitchen or kitchenette. On the morning of the wedding, the wedding party will be having breakfast in the restaurant — all welcome to join or do your own thing.",
+      "tag": ""
+    },
+    {
+      "day_number": "21",
+      "weekday": "Saturday",
+      "month": "August",
+      "title": "BBQ & Pool Party",
+      "icon": "pool",
+      "featured": false,
+      "description": "The slow, happy comedown. Kicking off from 14:00 — food will be provided along with a selection of drinks, but feel free to BYOB. Lounge by the pool, dig into a long lazy barbecue and toast the weekend one last time. Bring your swimsuit — and leave your shoes behind.",
+      "details": "From 14:00 · Food & drinks provided · BYOB welcome · Pool & sunshine",
+      "note": "",
+      "tag": "Limoncello spritz by the pool"
+    }
+  ]
+}

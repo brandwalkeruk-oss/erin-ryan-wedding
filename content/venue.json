@@ -1,0 +1,38 @@
+{
+  "eyebrow": "The Venue",
+  "heading": "Tenuta di Forte\nSorgnano",
+  "paragraphs": [
+    "Our home for the weekend is a Lombard castle that has stood for over a thousand years, crowning a hilltop above the Tuderte valley in central Umbria. Honey-coloured stone, vaulted halls, olive groves and vineyards stretch as far as the eye can see.",
+    "The estate sits between Todi, Spoleto and the wine country of Montefalco — suspended, as they like to say, somewhere between earth and sky."
+  ],
+  "details": [
+    {
+      "label": "Address",
+      "value": "Gualdo Cattaneo (PG)"
+    },
+    {
+      "label": "Region",
+      "value": "Umbria, Italy"
+    },
+    {
+      "label": "The Day",
+      "value": "Fri 20 August 2027"
+    }
+  ],
+  "button_text": "Discover the estate",
+  "button_link": "https://www.fortesorgnano.com/en/",
+  "photos": [
+    {
+      "image": "https://www.fortesorgnano.com/wp-content/uploads/2018/10/DSC_3511-1-1.jpg",
+      "alt": "Forte Sorgnano castle"
+    },
+    {
+      "image": "https://www.fortesorgnano.com/wp-content/uploads/2018/10/DSC_7236-1.jpg",
+      "alt": "The estate grounds"
+    },
+    {
+      "image": "https://www.fortesorgnano.com/wp-content/uploads/2018/10/DSC_6166.jpg",
+      "alt": "Umbrian hillside"
+    }
+  ]
+}

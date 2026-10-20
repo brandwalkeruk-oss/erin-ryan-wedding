@@ -1,0 +1,30 @@
+{
+  "eyebrow": "While You're Here",
+  "heading": "Things to Do",
+  "items": [
+    {
+      "name": "Wine tasting, Montefalco",
+      "distance": "~20 min"
+    },
+    {
+      "name": "Todi — hilltop medieval town",
+      "distance": "~20 min"
+    },
+    {
+      "name": "Assisi — Basilica of St Francis",
+      "distance": "~45 min"
+    },
+    {
+      "name": "Spoleto — Ponte delle Torri",
+      "distance": "~30 min"
+    },
+    {
+      "name": "Truffle hunting & Umbrian food tours",
+      "distance": "in the area"
+    },
+    {
+      "name": "Bevagna — tiny walled Roman town",
+      "distance": "~25 min"
+    }
+  ]
+}

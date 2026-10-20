@@ -1,0 +1,19 @@
+{
+  "eyebrow": "Getting There",
+  "heading": "Finding Us",
+  "intro": "Most guests will fly into Rome or Perugia. From Rome it's a straightforward train to Perugia, and we'll be in touch with details closer to the date. Let us know your travel plans in your RSVP and we'll do our best to facilitate pickups where possible.",
+  "airports": [
+    {
+      "code": "FCO",
+      "name": "Rome Fiumicino",
+      "description": "The best-connected option for international flights. From the airport, a direct train to **Roma Termini** takes around 30 minutes, and from there it's a straightforward 2.5 hour train to Perugia — we'll share full details closer to the date."
+    },
+    {
+      "code": "PEG",
+      "name": "Perugia San Francesco d'Assisi",
+      "description": "A small regional airport with flights from a handful of European cities. If you can get here direct, it puts you just 20 minutes from the estate — very handy."
+    }
+  ],
+  "map_button_text": "Open venue in Google Maps",
+  "map_link": "https://www.google.it/maps/place/Tenuta+di+Forte+Sorgnano/@42.9635293,12.4917144,17z"
+}

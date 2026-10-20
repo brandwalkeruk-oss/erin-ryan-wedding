@@ -1,0 +1,205 @@
+# Decap CMS — editor for the wedding website (opens at /admin)
+backend:
+  name: git-gateway
+  branch: main            # change to "master" if that's your repo's branch name
+
+media_folder: "images/uploads"
+public_folder: "/images/uploads"
+site_url: "/"
+display_url: "/"
+
+collections:
+  - name: "site"
+    label: "Wedding website"
+    format: "json"
+    editor:
+      preview: false
+    files:
+
+      # ---------------------------------------------------------------
+      - label: "1. Top of page, welcome & footer"
+        name: "general"
+        file: "content/general.json"
+        fields:
+          - { label: "Browser tab title", name: "page_title", widget: "string" }
+          - { label: "First name", name: "name_1", widget: "string" }
+          - { label: "Second name", name: "name_2", widget: "string" }
+          - label: "Countdown to (Italy time)"
+            name: "countdown_to"
+            widget: "string"
+            hint: "Format: YYYY-MM-DDTHH:MM, e.g. 2027-08-20T15:00"
+            pattern: ['^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$', "Use the format 2027-08-20T15:00"]
+          - { label: "Big header photo", name: "hero_image", widget: "image" }
+          - { label: "Small text above names", name: "hero_eyebrow", widget: "string" }
+          - { label: "Line under names", name: "hero_tagline", widget: "string" }
+          - { label: "Date & place line", name: "hero_location", widget: "string" }
+          - { label: "Welcome – small heading", name: "welcome_eyebrow", widget: "string" }
+          - { label: "Welcome – main text", name: "welcome_text", widget: "text", hint: "Put *stars* around words to make them italic." }
+          - { label: "Welcome – second line", name: "welcome_subtext", widget: "string" }
+          - { label: "Welcome – signature", name: "welcome_signature", widget: "string" }
+          - { label: "Dark strip text (under welcome)", name: "strip_text", widget: "string" }
+          - label: "Landscape photo section"
+            name: "landscape"
+            widget: "object"
+            collapsed: true
+            fields:
+              - { label: "Photo", name: "image", widget: "image" }
+              - { label: "Small heading", name: "eyebrow", widget: "string" }
+              - { label: "Heading", name: "heading", widget: "string" }
+              - { label: "Text", name: "text", widget: "text" }
+          - label: "Limoncello banner (above FAQs)"
+            name: "banner"
+            widget: "object"
+            collapsed: true
+            fields:
+              - { label: "Heading", name: "heading", widget: "string" }
+              - { label: "Text", name: "text", widget: "text" }
+          - label: "Footer"
+            name: "footer"
+            widget: "object"
+            collapsed: true
+            fields:
+              - { label: "Date line", name: "date_line", widget: "string" }
+              - { label: "Venue name", name: "venue_name", widget: "string" }
+              - { label: "Address", name: "address", widget: "string" }
+              - { label: "Bottom line", name: "credit", widget: "string" }
+
+      # ---------------------------------------------------------------
+      - label: "2. The Venue"
+        name: "venue"
+        file: "content/venue.json"
+        fields:
+          - { label: "Small heading", name: "eyebrow", widget: "string" }
+          - { label: "Heading", name: "heading", widget: "text", hint: "Press Enter to start a new line." }
+          - label: "Paragraphs"
+            name: "paragraphs"
+            widget: "list"
+            field: { label: "Paragraph", name: "paragraph", widget: "text" }
+          - label: "Details (Address, Region…)"
+            name: "details"
+            widget: "list"
+            summary: "{{fields.label}}: {{fields.value}}"
+            fields:
+              - { label: "Label", name: "label", widget: "string" }
+              - { label: "Value", name: "value", widget: "string" }
+          - { label: "Button text", name: "button_text", widget: "string" }
+          - { label: "Button link", name: "button_link", widget: "string" }
+          - label: "Photos (first one shows largest)"
+            name: "photos"
+            widget: "list"
+            summary: "{{fields.alt}}"
+            fields:
+              - { label: "Photo", name: "image", widget: "image" }
+              - { label: "Short description", name: "alt", widget: "string" }
+
+      # ---------------------------------------------------------------
+      - label: "3. What's On (the weekend)"
+        name: "weekend"
+        file: "content/weekend.json"
+        fields:
+          - { label: "Small heading", name: "eyebrow", widget: "string" }
+          - { label: "Heading", name: "heading", widget: "string" }
+          - { label: "Intro", name: "intro", widget: "text" }
+          - label: "Days"
+            name: "days"
+            widget: "list"
+            summary: "{{fields.weekday}} {{fields.day_number}} – {{fields.title}}"
+            fields:
+              - { label: "Date number", name: "day_number", widget: "string" }
+              - { label: "Weekday", name: "weekday", widget: "string" }
+              - { label: "Month", name: "month", widget: "string" }
+              - { label: "Title", name: "title", widget: "string" }
+              - label: "Icon"
+                name: "icon"
+                widget: "select"
+                options:
+                  - { label: "Drinks glass", value: "drinks" }
+                  - { label: "Heart", value: "heart" }
+                  - { label: "Pool / BBQ", value: "pool" }
+              - { label: "Highlight this day", name: "featured", widget: "boolean", default: false }
+              - { label: "Description", name: "description", widget: "text" }
+              - { label: "Times line (small red text)", name: "details", widget: "string", required: false }
+              - { label: "Extra note", name: "note", widget: "text", required: false }
+              - { label: "Lemon tag", name: "tag", widget: "string", required: false }
+
+      # ---------------------------------------------------------------
+      - label: "4. Getting There"
+        name: "travel"
+        file: "content/travel.json"
+        fields:
+          - { label: "Small heading", name: "eyebrow", widget: "string" }
+          - { label: "Heading", name: "heading", widget: "string" }
+          - { label: "Intro", name: "intro", widget: "text" }
+          - label: "Airports / routes"
+            name: "airports"
+            widget: "list"
+            summary: "{{fields.code}} – {{fields.name}}"
+            fields:
+              - { label: "Short code (in the circle)", name: "code", widget: "string" }
+              - { label: "Name", name: "name", widget: "string" }
+              - { label: "Description", name: "description", widget: "text", hint: "Put **double stars** around words to make them bold." }
+          - { label: "Map button text", name: "map_button_text", widget: "string" }
+          - { label: "Map link", name: "map_link", widget: "string" }
+
+      # ---------------------------------------------------------------
+      - label: "5. Where to Stay"
+        name: "stay"
+        file: "content/stay.json"
+        fields:
+          - { label: "Small heading", name: "eyebrow", widget: "string" }
+          - { label: "Heading", name: "heading", widget: "string" }
+          - label: "Paragraphs"
+            name: "paragraphs"
+            widget: "list"
+            field: { label: "Paragraph", name: "paragraph", widget: "text" }
+          - { label: "Button text", name: "button_text", widget: "string" }
+
+      # ---------------------------------------------------------------
+      - label: "6. Things to Do"
+        name: "things-to-do"
+        file: "content/things-to-do.json"
+        fields:
+          - { label: "Small heading", name: "eyebrow", widget: "string" }
+          - { label: "Heading", name: "heading", widget: "string" }
+          - label: "Activities"
+            name: "items"
+            widget: "list"
+            summary: "{{fields.name}} ({{fields.distance}})"
+            fields:
+              - { label: "Activity", name: "name", widget: "string" }
+              - { label: "Distance", name: "distance", widget: "string" }
+
+      # ---------------------------------------------------------------
+      - label: "7. FAQs"
+        name: "faqs"
+        file: "content/faqs.json"
+        fields:
+          - { label: "Small heading", name: "eyebrow", widget: "string" }
+          - { label: "Heading", name: "heading", widget: "string" }
+          - { label: "Intro", name: "intro", widget: "string" }
+          - label: "Questions"
+            name: "items"
+            widget: "list"
+            summary: "{{fields.question}}"
+            fields:
+              - { label: "Question", name: "question", widget: "string" }
+              - { label: "Answer", name: "answer", widget: "text" }
+
+      # ---------------------------------------------------------------
+      - label: "8. RSVP"
+        name: "rsvp"
+        file: "content/rsvp.json"
+        fields:
+          - { label: "Small heading", name: "eyebrow", widget: "string" }
+          - { label: "Heading", name: "heading", widget: "string" }
+          - { label: "Reply-by date", name: "deadline", widget: "string" }
+          - label: "Email address RSVPs are sent to"
+            name: "email"
+            widget: "string"
+            required: false
+            hint: "Guests' RSVP emails will be addressed here."
+          - { label: "Email subject", name: "email_subject", widget: "string" }
+          - { label: "Thank-you heading (attending)", name: "accepted_title", widget: "string", hint: "{name} is replaced with the guest's first name." }
+          - { label: "Thank-you message (attending)", name: "accepted_message", widget: "text" }
+          - { label: "Heading (not attending)", name: "declined_title", widget: "string" }
+          - { label: "Message (not attending)", name: "declined_message", widget: "text", hint: "{name} is replaced with the guest's full name." }
