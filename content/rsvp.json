@@ -1,11 +1,11 @@
 {
-  "eyebrow": "Will You Join Us?",
-  "heading": "RSVP",
-  "deadline": "1st March 2027",
-  "email": "",
-  "email_subject": "RSVP - Erin & Ryan Wedding 20 Aug 2027",
   "accepted_title": "Grazie mille, {name}!",
-  "accepted_message": "We've got you down for the wedding weekend. Tap below to send it by email and it's officially confirmed.",
+  "heading": "SAVE THE DATE",
   "declined_title": "We'll miss you",
-  "declined_message": "Thank you for letting us know, {name}. We'll raise a limoncello in your honour from Umbria."
+  "email_subject": "Save the Date - Erin & Ryan's Wedding 20 Aug 2027",
+  "eyebrow": "WILL YOU JOIN US?",
+  "accepted_message": "We've got you down for the wedding weekend. Tap below to send it by email and it's officially confirmed.",
+  "declined_message": "Thank you for letting us know, {name}. We'll raise a limoncello in your honour from Umbria.",
+  "deadline": "30 November 2027",
+  "email": "egilmour92@gmail.com"
 }
