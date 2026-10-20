@@ -1,17 +1,17 @@
 {
   "eyebrow": "Getting There",
   "heading": "Finding Us",
-  "intro": "Most guests will fly into Rome or Perugia. From Rome it's a straightforward train to Perugia, and we'll be in touch with details closer to the date. Let us know your travel plans in your RSVP and we'll do our best to facilitate pickups where possible.",
+  "intro": "Most guests will fly into Rome Fiumicino or Rome Ciampino and either hire a car to travel directly to the venue or will get a train to Foligno train station which is about 40 minutes drive from the venue. We have a few drivers on hand who may be able to pick people up from train stations, or possibly from airports, depending on arrival times. Alternatively, the venue can provide shuttle services from train stations.\nLet us know your travel plans in your RSVP and we'll do our best to facilitate pickups where possible.",
   "airports": [
     {
       "code": "FCO",
       "name": "Rome Fiumicino",
-      "description": "The best-connected option for international flights. From the airport, a direct train to **Roma Termini** takes around 30 minutes, and from there it's a straightforward 2.5 hour train to Perugia — we'll share full details closer to the date."
+      "description": "The best-connected option for international flights. From the airport, a direct train to **Roma Termini** takes around 30 minutes, and from there it's a straightforward 2.5 hour train to Perugia."
     },
     {
       "code": "PEG",
       "name": "Perugia San Francesco d'Assisi",
-      "description": "A small regional airport with flights from a handful of European cities. If you can get here direct, it puts you just 20 minutes from the estate — very handy."
+      "description": "A small regional airport with flights from a handful of European cities. If you are one of the lucky few that can get here direct, it puts you just 20 minutes from the estate — very handy."
     }
   ],
   "map_button_text": "Open venue in Google Maps",
