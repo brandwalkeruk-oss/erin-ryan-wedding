@@ -205,7 +205,7 @@ collections:
           - { label: "Message (not attending)", name: "declined_message", widget: "text", hint: "{name} is replaced with the guest's full name." }
 
       # ---------------------------------------------------------------
-      - label: "9. Colours"
+      - label: "9. Colours & fonts"
         name: "theme"
         file: "content/theme.json"
         description: "Changes colours across the whole site. Keep the dark and light backgrounds clearly different so text stays readable. Original colours: accent #8b1a3a, green #6b7c3a, dark #1c2214, light #f5f0e4, text #2e3828."
@@ -215,3 +215,13 @@ collections:
           - { label: "Dark background (What's On, RSVP, footer)", name: "dark", widget: "color", allowInput: true }
           - { label: "Light background (light sections, menu bar)", name: "light", widget: "color", allowInput: true }
           - { label: "Main text", name: "text", widget: "color", allowInput: true }
+          - label: "Fonts"
+            name: "fonts"
+            widget: "object"
+            required: false
+            collapsed: true
+            fields:
+              - { label: "Headings", name: "heading", widget: "select", required: false, default: "Fraunces", options: ["Fraunces", "Playfair Display", "Cormorant Garamond", "EB Garamond", "Lora", "Libre Baskerville", "DM Serif Display", "Cinzel", "Jost", "Montserrat", "Raleway", "Lato", "Poppins", "Work Sans", "Inter", "Pinyon Script", "Great Vibes", "Parisienne", "Allura", "Alex Brush", "Dancing Script", "Sacramento"] }
+              - { label: "Body text", name: "body", widget: "select", required: false, default: "Jost", options: ["Fraunces", "Playfair Display", "Cormorant Garamond", "EB Garamond", "Lora", "Libre Baskerville", "DM Serif Display", "Cinzel", "Jost", "Montserrat", "Raleway", "Lato", "Poppins", "Work Sans", "Inter", "Pinyon Script", "Great Vibes", "Parisienne", "Allura", "Alex Brush", "Dancing Script", "Sacramento"] }
+              - { label: "Accent (italic lines)", name: "accent", widget: "select", required: false, default: "Cormorant Garamond", options: ["Fraunces", "Playfair Display", "Cormorant Garamond", "EB Garamond", "Lora", "Libre Baskerville", "DM Serif Display", "Cinzel", "Jost", "Montserrat", "Raleway", "Lato", "Poppins", "Work Sans", "Inter", "Pinyon Script", "Great Vibes", "Parisienne", "Allura", "Alex Brush", "Dancing Script", "Sacramento"] }
+              - { label: "Script (signature)", name: "script", widget: "select", required: false, default: "Pinyon Script", options: ["Fraunces", "Playfair Display", "Cormorant Garamond", "EB Garamond", "Lora", "Libre Baskerville", "DM Serif Display", "Cinzel", "Jost", "Montserrat", "Raleway", "Lato", "Poppins", "Work Sans", "Inter", "Pinyon Script", "Great Vibes", "Parisienne", "Allura", "Alex Brush", "Dancing Script", "Sacramento"] }
