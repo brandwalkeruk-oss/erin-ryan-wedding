@@ -531,7 +531,9 @@ const $=id=>document.getElementById(id);
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 // *italic*, **bold**, line breaks — so the client can style text without HTML
 const fmt=s=>esc(s).replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>').replace(/\*(.+?)\*/g,'<em>$1</em>').replace(/\n/g,'<br>');
-const set=(id,v)=>{const el=$(id);if(el)el.innerHTML=fmt(v);};
+// set(id, value, 'file|path') also tags the element so the on-page editor knows where to save it
+const set=(id,v,path)=>{const el=$(id);if(!el)return;el.innerHTML=fmt(v);if(path)el.dataset.cms=path;};
+const cms=path=>`data-cms="${path}"`;
 const ICONS={
   drinks:'<path d="M6 3h12l-1 7a5 5 0 0 1-10 0z M12 17v4 M8 21h8"/>',
   heart:'<path d="M12 21s-7-4.3-9.5-8.7C.8 9 2.2 5.5 5.5 5.5c2 0 3.5 1.3 4.5 2.8 1-1.5 2.5-2.8 4.5-2.8 3.3 0 4.7 3.5 3 6.8C19 16.7 12 21 12 21z"/>',
@@ -548,81 +550,83 @@ function render(){
   document.title=g.page_title||document.title;
   $('navMono').innerHTML=`${esc((g.name_1||'')[0]||'')}<span style="font-family:'Cormorant Garamond',serif;font-style:italic;color:var(--c-accent)">&amp;</span>${esc((g.name_2||'')[0]||'')}`;
   if(g.hero_image)$('heroImg').style.backgroundImage=`url('${g.hero_image}')`;
-  set('heroEyebrow',g.hero_eyebrow);set('name1',g.name_1);set('name2',g.name_2);
-  set('heroTagline',g.hero_tagline);set('heroLoc',g.hero_location);
-  set('welcomeEyebrow',g.welcome_eyebrow);set('welcomeText',g.welcome_text);
-  set('welcomeSub',g.welcome_subtext);set('welcomeSign',g.welcome_signature);
-  set('stripText',g.strip_text);
+  $('heroImg').dataset.cmsImg='general|hero_image';$('landscape').dataset.cmsImg='general|landscape.image';
+  set('heroEyebrow',g.hero_eyebrow,'general|hero_eyebrow');set('name1',g.name_1,'general|name_1');set('name2',g.name_2,'general|name_2');
+  set('heroTagline',g.hero_tagline,'general|hero_tagline');set('heroLoc',g.hero_location,'general|hero_location');
+  set('welcomeEyebrow',g.welcome_eyebrow,'general|welcome_eyebrow');set('welcomeText',g.welcome_text,'general|welcome_text');
+  set('welcomeSub',g.welcome_subtext,'general|welcome_subtext');set('welcomeSign',g.welcome_signature,'general|welcome_signature');
+  set('stripText',g.strip_text,'general|strip_text');
   const ls=g.landscape||{};
-  set('landscapeEyebrow',ls.eyebrow);set('landscapeHeading',ls.heading);set('landscapeText',ls.text);
+  set('landscapeEyebrow',ls.eyebrow,'general|landscape.eyebrow');set('landscapeHeading',ls.heading,'general|landscape.heading');set('landscapeText',ls.text,'general|landscape.text');
   const li=$('landscapeImg');li.alt=ls.heading||'';
   li.onerror=()=>{li.parentElement.style.background='linear-gradient(160deg,#6c7455,#a9824a,#2a2017)';li.remove();};
   li.src=ls.image||'';
-  const bn=g.banner||{};set('bannerHeading',bn.heading);set('bannerText',bn.text);
+  const bn=g.banner||{};set('bannerHeading',bn.heading,'general|banner.heading');set('bannerText',bn.text,'general|banner.text');
   const ft=g.footer||{};
   $('footNames').textContent=`${g.name_1} & ${g.name_2}`;
-  set('footDate',ft.date_line);set('footVenue',ft.venue_name);set('footAddress',ft.address);set('footCredit',ft.credit);
+  set('footDate',ft.date_line,'general|footer.date_line');set('footVenue',ft.venue_name,'general|footer.venue_name');set('footAddress',ft.address,'general|footer.address');set('footCredit',ft.credit,'general|footer.credit');
   $('footVenueLink').href=v.button_link||'#';$('footMapLink').href=t.map_link||'#';
 
   // venue
-  set('venueEyebrow',v.eyebrow);set('venueHeading',v.heading);
-  $('venueParas').innerHTML=(v.paragraphs||[]).map(p=>`<p>${fmt(p)}</p>`).join('');
-  $('venueMeta').innerHTML=(v.details||[]).map(d=>`<div><span>${esc(d.label)}</span><strong>${esc(d.value)}</strong></div>`).join('');
-  $('venueBtn').textContent=v.button_text||'';$('venueBtn').href=v.button_link||'#';
+  set('venueEyebrow',v.eyebrow,'venue|eyebrow');set('venueHeading',v.heading,'venue|heading');
+  $('venueParas').innerHTML=(v.paragraphs||[]).map((p,i)=>`<p ${cms('venue|paragraphs.'+i)}>${fmt(p)}</p>`).join('');
+  $('venueMeta').innerHTML=(v.details||[]).map((d,i)=>`<div><span ${cms('venue|details.'+i+'.label')}>${esc(d.label)}</span><strong ${cms('venue|details.'+i+'.value')}>${esc(d.value)}</strong></div>`).join('');
+  set('venueBtn',v.button_text||'','venue|button_text');$('venueBtn').href=v.button_link||'#';
   const fb=['linear-gradient(160deg,#caa86f,#8c3d1d 70%,#525940)','linear-gradient(150deg,#caa86f,#6c7455)','linear-gradient(160deg,#e7d8bd,#b3532a)'];
-  $('venuePhotos').innerHTML=(v.photos||[]).map(p=>`<div class="pstrip-item"><img src="${esc(p.image)}" alt="${esc(p.alt)}" loading="lazy"></div>`).join('');
+  $('venuePhotos').innerHTML=(v.photos||[]).map((p,i)=>`<div class="pstrip-item" data-cms-img="venue|photos.${i}.image"><img src="${esc(p.image)}" alt="${esc(p.alt)}" loading="lazy"></div>`).join('');
   $('venuePhotos').querySelectorAll('img').forEach((img,i)=>img.onerror=()=>{img.parentElement.style.background=fb[i%3];img.remove();});
 
   // weekend
-  set('weekendEyebrow',w.eyebrow);set('weekendHeading',w.heading);set('weekendIntro',w.intro);
-  $('timeline').innerHTML=(w.days||[]).map(d=>`
+  set('weekendEyebrow',w.eyebrow,'weekend|eyebrow');set('weekendHeading',w.heading,'weekend|heading');set('weekendIntro',w.intro,'weekend|intro');
+  $('timeline').innerHTML=(w.days||[]).map((d,i)=>{const k='weekend|days.'+i+'.';return `
     <div class="day${d.featured?' feature':''} reveal">
-      <div class="day-date"><div class="day-num">${esc(d.day_number)}</div><div class="day-dow">${esc(d.weekday)}</div><div class="day-mon">${esc(d.month)}</div></div>
+      <div class="day-date"><div class="day-num" ${cms(k+'day_number')}>${esc(d.day_number)}</div><div class="day-dow" ${cms(k+'weekday')}>${esc(d.weekday)}</div><div class="day-mon" ${cms(k+'month')}>${esc(d.month)}</div></div>
       <div class="day-body">
-        <h3><svg viewBox="0 0 24 24">${ICONS[d.icon]||ICONS.heart}</svg>${esc(d.title)}</h3>
-        <p>${fmt(d.description)}</p>
-        ${d.details?`<div class="when">${esc(d.details)}</div>`:''}
-        ${d.note?`<p class="day-note">${fmt(d.note)}</p>`:''}
-        ${d.tag?`<div class="lemon-tag">${LEMON}${esc(d.tag)}</div>`:''}
+        <h3><svg viewBox="0 0 24 24">${ICONS[d.icon]||ICONS.heart}</svg><span ${cms(k+'title')}>${esc(d.title)}</span></h3>
+        <p ${cms(k+'description')}>${fmt(d.description)}</p>
+        ${d.details?`<div class="when" ${cms(k+'details')}>${esc(d.details)}</div>`:''}
+        ${d.note?`<p class="day-note" ${cms(k+'note')}>${fmt(d.note)}</p>`:''}
+        ${d.tag?`<div class="lemon-tag">${LEMON}<span ${cms(k+'tag')}>${esc(d.tag)}</span></div>`:''}
       </div>
-    </div>`).join('');
+    </div>`;}).join('');
   // RSVP song-day options follow the schedule
   const sd=$('song_day');
   (w.days||[]).forEach(d=>{const o=document.createElement('option');o.value=o.textContent=`${d.weekday} ${d.day_number} – ${d.title}`;sd.appendChild(o);});
 
   // travel
-  set('travelEyebrow',t.eyebrow);set('travelHeading',t.heading);set('travelIntro',t.intro);
-  $('travelSteps').innerHTML=(t.airports||[]).map(a=>`
+  set('travelEyebrow',t.eyebrow,'travel|eyebrow');set('travelHeading',t.heading,'travel|heading');set('travelIntro',t.intro,'travel|intro');
+  $('travelSteps').innerHTML=(t.airports||[]).map((a,i)=>`
     <div class="ts-step">
-      <div class="ts-num" style="font-size:.75rem;letter-spacing:.04em">${esc(a.code)}</div>
-      <div class="ts-body"><h3>${esc(a.name)}</h3><p>${fmt(a.description)}</p></div>
+      <div class="ts-num" style="font-size:.75rem;letter-spacing:.04em" ${cms('travel|airports.'+i+'.code')}>${esc(a.code)}</div>
+      <div class="ts-body"><h3 ${cms('travel|airports.'+i+'.name')}>${esc(a.name)}</h3><p ${cms('travel|airports.'+i+'.description')}>${fmt(a.description)}</p></div>
     </div>`).join('');
-  $('mapBtn').textContent=t.map_button_text||'Open in Google Maps';$('mapBtn').href=t.map_link||'#';
+  set('mapBtn',t.map_button_text||'Open in Google Maps','travel|map_button_text');$('mapBtn').href=t.map_link||'#';
 
   // stay
-  set('stayEyebrow',s.eyebrow);set('stayHeading',s.heading);
-  $('stayParas').innerHTML=(s.paragraphs||[]).map((p,i)=>`<p${i?' style="margin-top:.8em"':''}>${fmt(p)}</p>`).join('');
-  $('stayBtn').textContent=s.button_text||'';
+  set('stayEyebrow',s.eyebrow,'stay|eyebrow');set('stayHeading',s.heading,'stay|heading');
+  $('stayParas').innerHTML=(s.paragraphs||[]).map((p,i)=>`<p${i?' style="margin-top:.8em"':''} ${cms('stay|paragraphs.'+i)}>${fmt(p)}</p>`).join('');
+  set('stayBtn',s.button_text||'','stay|button_text');
 
   // things to do
-  set('todoEyebrow',td.eyebrow);set('todoHeading',td.heading);
-  $('todoGrid').innerHTML=(td.items||[]).map(x=>`<div class="sl-item"><div class="sl-name">${esc(x.name)}</div><div class="sl-dist">${esc(x.distance)}</div></div>`).join('');
+  set('todoEyebrow',td.eyebrow,'things-to-do|eyebrow');set('todoHeading',td.heading,'things-to-do|heading');
+  $('todoGrid').innerHTML=(td.items||[]).map((x,i)=>`<div class="sl-item"><div class="sl-name" ${cms('things-to-do|items.'+i+'.name')}>${esc(x.name)}</div><div class="sl-dist" ${cms('things-to-do|items.'+i+'.distance')}>${esc(x.distance)}</div></div>`).join('');
 
   // faqs
-  set('faqEyebrow',f.eyebrow);set('faqHeading',f.heading);set('faqIntro',f.intro);
-  $('faqList').innerHTML=(f.items||[]).map(x=>`
+  set('faqEyebrow',f.eyebrow,'faqs|eyebrow');set('faqHeading',f.heading,'faqs|heading');set('faqIntro',f.intro,'faqs|intro');
+  $('faqList').innerHTML=(f.items||[]).map((x,i)=>`
     <div class="faq-item">
-      <button class="faq-q">${esc(x.question)}<svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
-      <div class="faq-a"><p>${fmt(x.answer)}</p></div>
+      <button class="faq-q"><span ${cms('faqs|items.'+i+'.question')}>${esc(x.question)}</span><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
+      <div class="faq-a"><p ${cms('faqs|items.'+i+'.answer')}>${fmt(x.answer)}</p></div>
     </div>`).join('');
   document.querySelectorAll('.faq-q').forEach(btn=>btn.addEventListener('click',()=>{
+    if(document.body.classList.contains('cms-editing'))return;
     const item=btn.parentElement,open=item.classList.contains('open');
     document.querySelectorAll('.faq-item').forEach(i=>i.classList.remove('open'));
     if(!open)item.classList.add('open');
   }));
 
   // rsvp
-  set('rsvpEyebrow',r.eyebrow);set('rsvpHeading',r.heading);set('rsvpDeadline',r.deadline);
+  set('rsvpEyebrow',r.eyebrow,'rsvp|eyebrow');set('rsvpHeading',r.heading,'rsvp|heading');set('rsvpDeadline',r.deadline,'rsvp|deadline');
 
   startCountdown(g.countdown_to);
 }
@@ -678,7 +682,10 @@ $('rsvpSubmit').addEventListener('click',()=>{
 });
 
 /* ---------- colours from the editor ---------- */
+const THEME_DEFAULT={accent:'#8b1a3a',green:'#6b7c3a',dark:'#1c2214',light:'#f5f0e4',text:'#2e3828'};
+let THEME={...THEME_DEFAULT};
 fetch('/content/theme.json',{cache:'no-cache'}).then(r=>r.ok?r.json():{}).then(t=>{
+  Object.keys(THEME_DEFAULT).forEach(k=>{if(/^#[0-9a-f]{6}$/i.test(t[k]||''))THEME[k]=t[k].toLowerCase();});
   const map={accent:'--c-accent',green:'--c-green',dark:'--c-dark',light:'--c-light',text:'--c-text'};
   Object.entries(map).forEach(([k,v])=>{if(/^#[0-9a-f]{3,8}$/i.test(t[k]||''))document.documentElement.style.setProperty(v,t[k]);});
 }).catch(()=>{});
@@ -689,10 +696,256 @@ Promise.all(FILES.map(n=>fetch(`/content/${n}.json`,{cache:'no-cache'}).then(r=>
   .catch(err=>console.error('Could not load site content',err))
   .finally(()=>{document.documentElement.classList.remove('loading');startReveal();});
 
-/* ---------- send editors to /admin after accepting an invite ---------- */
-if(window.netlifyIdentity){
-  netlifyIdentity.on('init',user=>{if(!user)netlifyIdentity.on('login',()=>{document.location.href='/admin/';});});
+/* =========================================================
+   ON-PAGE EDITOR
+   Logged-in editors see an "Edit page" button. In edit mode they can:
+   - click any text and type
+   - replace any photo
+   - change the site colours with a live preview
+   Saving commits to GitHub through Netlify's Git Gateway
+   (the same route the /admin editor uses).
+   Visit the site with #edit on the end to log in from the page.
+   ========================================================= */
+const CMS_BRANCH='main';
+const ed={on:false,bar:null,saving:false,photos:{},theme:null};
+const COLOUR_LABELS={accent:'Accent (buttons, highlights)',green:'Green (dates, details)',dark:'Dark background',light:'Light background',text:'Main text'};
+
+function cmsStyles(){
+  const st=document.createElement('style');
+  st.textContent=`
+  #cmsBar{position:fixed;right:18px;bottom:18px;z-index:10000;display:flex;gap:8px;align-items:flex-end;flex-wrap:wrap;justify-content:flex-end;
+    font-family:'Jost',system-ui,sans-serif;max-width:calc(100vw - 36px)}
+  #cmsBar button,#cmsBar a,.cms-photo-btn{border:0;border-radius:999px;padding:11px 18px;font:500 14px/1 'Jost',system-ui,sans-serif;cursor:pointer;
+    box-shadow:0 6px 20px rgba(0,0,0,.25);text-decoration:none;letter-spacing:.02em}
+  #cmsBar .p{background:#111;color:#fff}#cmsBar .s{background:#fff;color:#111}
+  #cmsBar button:disabled{opacity:.6;cursor:wait}
+  #cmsMsg{background:#111;color:#fff;border-radius:10px;padding:10px 14px;font-size:13px;line-height:1.4;max-width:320px;box-shadow:0 6px 20px rgba(0,0,0,.25)}
+  body.cms-editing [data-cms]{outline:1.5px dashed rgba(66,133,244,.75);outline-offset:3px;cursor:text;border-radius:2px}
+  body.cms-editing [data-cms]:hover{outline-color:#4285f4;background:rgba(66,133,244,.08)}
+  body.cms-editing [data-cms]:focus{outline:2px solid #4285f4;background:rgba(66,133,244,.10)}
+  body.cms-editing [data-cms].cms-changed{outline-color:#f4a742}
+  body.cms-editing .faq-item .faq-a{max-height:none;overflow:visible}
+  body.cms-editing .faq-a p{padding-top:4px}
+  body.cms-editing .reveal{opacity:1;transform:none}
+  .cms-photo-btn{position:absolute;top:12px;left:12px;z-index:20;background:#fff;color:#111;padding:9px 14px;font-size:13px}
+  .cms-photo-btn.changed{background:#f4a742}
+  .cms-hero-btn{top:84px;left:20px}
+  #cmsColours{position:fixed;right:18px;bottom:76px;z-index:10001;background:#fff;color:#111;border-radius:14px;padding:16px 18px;width:300px;
+    max-width:calc(100vw - 36px);box-shadow:0 10px 40px rgba(0,0,0,.3);font:14px/1.4 'Jost',system-ui,sans-serif}
+  #cmsColours h4{font:600 15px/1.2 'Jost',system-ui,sans-serif;margin:0 0 4px;color:#111}
+  #cmsColours p{font-size:12px;color:#555;margin:0 0 12px}
+  #cmsColours label{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:6px 0;border-top:1px solid #eee;color:#111}
+  #cmsColours input{width:44px;height:30px;border:1px solid #ccc;border-radius:6px;padding:0;background:none;cursor:pointer}
+  #cmsColours .row{display:flex;gap:8px;margin-top:12px}
+  #cmsColours .row button{flex:1;border:0;border-radius:999px;padding:9px;font:500 13px 'Jost',system-ui,sans-serif;cursor:pointer;background:#eee;color:#111}
+  #cmsColours .row button.p{background:#111;color:#fff}`;
+  document.head.appendChild(st);
 }
+
+const getP=(o,path)=>path.split('.').reduce((a,k)=>a==null?a:a[k],o);
+const setP=(o,path,val)=>{const ks=path.split('.');const last=ks.pop();ks.reduce((a,k)=>a[k],o)[last]=val;};
+
+// turn the edited page text back into the *italic* / **bold** format used in the content files
+function serialize(node){
+  let out='';
+  node.childNodes.forEach(n=>{
+    if(n.nodeType===3){out+=n.nodeValue;return;}
+    if(n.nodeType!==1)return;
+    const t=n.tagName.toUpperCase();
+    if(t==='BR')out+='\n';
+    else if(t==='EM'||t==='I'){const x=serialize(n);if(x.trim())out+='*'+x+'*';}
+    else if(t==='STRONG'||t==='B'){const x=serialize(n);if(x.trim())out+='**'+x+'**';}
+    else if(t==='DIV'||t==='P'){if(out&&!out.endsWith('\n'))out+='\n';out+=serialize(n);}
+    else if(t==='SVG')return;
+    else out+=serialize(n);
+  });
+  return out;
+}
+const clean=s=>s.replace(/ /g,' ').replace(/\n+$/,'').replace(/[ \t]+\n/g,'\n');
+
+function bar(html){ed.bar.innerHTML=html;}
+function msg(text){let m=document.getElementById('cmsMsg');if(!text){m&&m.remove();return;}
+  if(!m){m=document.createElement('div');m.id='cmsMsg';ed.bar.prepend(m);}m.textContent=text;}
+function hasChanges(){return !!document.querySelector('.cms-changed')||Object.keys(ed.photos).length>0||themeChanged();}
+function themeChanged(){return ed.theme&&Object.keys(THEME).some(k=>ed.theme[k]!==THEME[k]);}
+
+function showIdle(){
+  bar(`<button class="p" id="cmsEdit">✎ Edit page</button>`);
+  $('cmsEdit').onclick=startEditing;
+}
+
+/* ---------- text ---------- */
+function enableText(){
+  document.querySelectorAll('[data-cms]').forEach(el=>{
+    el.contentEditable='true';el.spellcheck=true;
+    el.dataset.orig=clean(serialize(el));
+    el.oninput=()=>el.classList.toggle('cms-changed',clean(serialize(el))!==el.dataset.orig);
+    // paste as plain text so no stray formatting comes in
+    el.onpaste=e=>{e.preventDefault();document.execCommand('insertText',false,(e.clipboardData||window.clipboardData).getData('text/plain'));};
+    // Enter = new line in paragraphs; ignored in single-line fields
+    el.onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();if(/^(P|H2)$/.test(el.tagName))document.execCommand('insertLineBreak');}};
+  });
+}
+// stop links and buttons from navigating while editing text
+document.addEventListener('click',e=>{if(ed.on&&e.target.closest('[data-cms]')){const a=e.target.closest('a,button');if(a&&!a.closest('#cmsBar'))e.preventDefault();}},true);
+
+/* ---------- photos ---------- */
+function enablePhotos(){
+  document.querySelectorAll('[data-cms-img]').forEach(el=>{
+    const host=el.id==='heroImg'?el.parentElement:el;
+    const btn=document.createElement('button');
+    btn.type='button';btn.className='cms-photo-btn'+(el.id==='heroImg'?' cms-hero-btn':'');
+    btn.textContent='🖼 Replace photo';
+    btn.onclick=e=>{e.preventDefault();e.stopPropagation();pickPhoto(el,btn);};
+    host.appendChild(btn);
+  });
+}
+function pickPhoto(el,btn){
+  const inp=document.createElement('input');inp.type='file';inp.accept='image/*';
+  inp.onchange=async()=>{
+    const file=inp.files[0];if(!file)return;
+    btn.textContent='Preparing…';
+    try{
+      const {dataUrl,base64}=await shrinkImage(file);
+      const [cfile,path]=el.dataset.cmsImg.split('|');
+      ed.photos[el.dataset.cmsImg]={file:cfile,path,base64,name:file.name};
+      // show the new photo straight away
+      if(el.id==='heroImg')el.style.backgroundImage=`url('${dataUrl}')`;
+      else{let img=el.querySelector('img');if(!img){img=document.createElement('img');el.prepend(img);}
+        img.onerror=null;img.src=dataUrl;img.style.cssText='width:100%;height:100%;object-fit:cover;display:block';}
+      btn.textContent='✓ New photo (unsaved)';btn.classList.add('changed');
+      msg('Photo ready. Click Save changes to publish it.');
+    }catch(err){console.error(err);btn.textContent='🖼 Replace photo';msg('Sorry, that file could not be read as a photo. Try a JPG or PNG.');}
+  };
+  inp.click();
+}
+// resize big phone/camera photos so the site stays fast (max 2000px wide, JPEG)
+function shrinkImage(file){
+  return new Promise((res,rej)=>{
+    const url=URL.createObjectURL(file);const img=new Image();
+    img.onload=()=>{
+      const max=2000,scale=Math.min(1,max/Math.max(img.width,img.height));
+      const c=document.createElement('canvas');c.width=Math.round(img.width*scale);c.height=Math.round(img.height*scale);
+      c.getContext('2d').drawImage(img,0,0,c.width,c.height);
+      const dataUrl=c.toDataURL('image/jpeg',0.84);URL.revokeObjectURL(url);
+      res({dataUrl,base64:dataUrl.split(',')[1]});
+    };
+    img.onerror=rej;img.src=url;
+  });
+}
+
+/* ---------- colours ---------- */
+function applyTheme(t){Object.entries(t).forEach(([k,v])=>document.documentElement.style.setProperty('--c-'+k,v));}
+function toggleColours(){
+  const open=$('cmsColours');if(open){open.remove();return;}
+  if(!ed.theme)ed.theme={...THEME};
+  const box=document.createElement('div');box.id='cmsColours';
+  box.innerHTML=`<h4>Colours</h4><p>Changes show on the page as you pick. Keep light and dark backgrounds clearly different so text stays readable.</p>
+    ${Object.keys(COLOUR_LABELS).map(k=>`<label>${COLOUR_LABELS[k]}<input type="color" data-k="${k}" value="${ed.theme[k]}"></label>`).join('')}
+    <div class="row"><button type="button" id="cmsReset">Original colours</button><button type="button" class="p" id="cmsDone">Done</button></div>`;
+  document.body.appendChild(box);
+  box.querySelectorAll('input').forEach(inp=>inp.oninput=()=>{ed.theme[inp.dataset.k]=inp.value.toLowerCase();applyTheme(ed.theme);});
+  $('cmsReset').onclick=()=>{ed.theme={...THEME_DEFAULT};applyTheme(ed.theme);box.querySelectorAll('input').forEach(i=>i.value=ed.theme[i.dataset.k]);};
+  $('cmsDone').onclick=()=>{box.remove();if(themeChanged())msg('Colours changed. Click Save changes to publish them.');};
+}
+
+/* ---------- edit mode ---------- */
+function startEditing(){
+  ed.on=true;document.body.classList.add('cms-editing');
+  enableText();enablePhotos();
+  bar(`<button class="s" id="cmsCancel">Cancel</button><button class="s" id="cmsColourBtn">🎨 Colours</button><a class="s" href="/admin/">Full editor</a><button class="p" id="cmsSave">Save changes</button>`);
+  msg('Click any outlined text to type. Use "Replace photo" on any picture, and 🎨 Colours for the colour scheme. Ctrl/Cmd+I = italic, Ctrl/Cmd+B = bold.');
+  $('cmsCancel').onclick=()=>{if(!hasChanges()||confirm('Discard your changes?'))location.reload();};
+  $('cmsColourBtn').onclick=toggleColours;
+  $('cmsSave').onclick=saveEdits;
+}
+window.addEventListener('beforeunload',e=>{if(ed.on&&!ed.saving&&hasChanges()&&!ed.leaving){e.preventDefault();e.returnValue='';}});
+
+/* ---------- saving to GitHub via Git Gateway ---------- */
+async function gh(path,opts={}){
+  const user=netlifyIdentity.currentUser();
+  if(!user)throw new Error('401');
+  const token=await user.jwt();
+  const url=`/.netlify/git/github/contents/${path.split('/').map(encodeURIComponent).join('/')}${opts.method?'':`?ref=${CMS_BRANCH}`}`;
+  const r=await fetch(url,{...opts,headers:{'Content-Type':'application/json',Authorization:`Bearer ${token}`}});
+  if(!r.ok)throw new Error(`${r.status}`);
+  return r.json();
+}
+const b64=str=>{const bytes=new TextEncoder().encode(str);let bin='';bytes.forEach(b=>bin+=String.fromCharCode(b));return btoa(bin);};
+const unb64=str=>new TextDecoder().decode(Uint8Array.from(atob(str.replace(/\n/g,'')),c=>c.charCodeAt(0)));
+const slug=s=>s.toLowerCase().replace(/\.[^.]+$/,'').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,40)||'photo';
+
+async function saveEdits(){
+  if(ed.saving)return;
+  if(!hasChanges()){msg('No changes to save yet.');return;}
+  ed.saving=true;const sb=$('cmsSave');sb.disabled=true;sb.textContent='Saving…';msg('');
+  const byFile={};
+  const add=(file,path,val,done)=>(byFile[file]=byFile[file]||[]).push([path,val,done]);
+  try{
+    // 1. upload new photos first
+    const stamp=new Date().toISOString().replace(/[-:T]/g,'').slice(0,14);
+    let n=0;
+    for(const [key,ph] of Object.entries(ed.photos)){
+      sb.textContent='Uploading photo…';
+      const fp=`images/uploads/${stamp}-${++n}-${slug(ph.name)}.jpg`;
+      await gh(fp,{method:'PUT',body:JSON.stringify({message:`Upload ${fp} (on-page editor)`,branch:CMS_BRANCH,content:ph.base64})});
+      add(ph.file,ph.path,'/'+fp,()=>{delete ed.photos[key];});
+    }
+    // 2. text changes
+    document.querySelectorAll('[data-cms].cms-changed').forEach(el=>{
+      const [file,path]=el.dataset.cms.split('|');const val=clean(serialize(el));
+      add(file,path,val,()=>{el.dataset.orig=val;el.classList.remove('cms-changed');});
+    });
+    // 3. save each content file (reading the latest version first, so /admin edits aren't overwritten)
+    sb.textContent='Saving…';
+    for(const [file,edits] of Object.entries(byFile)){
+      const fp=`content/${file}.json`;
+      const cur=await gh(fp);
+      const data=JSON.parse(unb64(cur.content));
+      edits.forEach(([path,val])=>setP(data,path,val));
+      await gh(fp,{method:'PUT',body:JSON.stringify({message:`Update ${file} (on-page editor)`,branch:CMS_BRANCH,sha:cur.sha,
+        content:b64(JSON.stringify(data,null,2)+'\n')})});
+      C[file]=data;edits.forEach(([, ,done])=>done());
+    }
+    document.querySelectorAll('.cms-photo-btn.changed').forEach(b=>{b.classList.remove('changed');b.textContent='🖼 Replace photo';});
+    // 4. colours
+    if(themeChanged()){
+      let sha;try{sha=(await gh('content/theme.json')).sha;}catch(e){if(e.message!=='404')throw e;}
+      await gh('content/theme.json',{method:'PUT',body:JSON.stringify({message:'Update colours (on-page editor)',branch:CMS_BRANCH,
+        ...(sha?{sha}:{}),content:b64(JSON.stringify(ed.theme,null,2)+'\n')})});
+      THEME={...ed.theme};
+    }
+    sb.disabled=false;sb.textContent='Save changes';
+    msg('Saved! The live site updates in about a minute.');
+  }catch(err){
+    console.error(err);
+    sb.disabled=false;sb.textContent='Save changes';
+    msg(err.message==='401'?'Your login has expired. Reload the page, log in again, then retry.'
+      :err.message==='409'||err.message==='422'?'Someone else changed this section at the same time. Note your changes, reload the page, and try again.'
+      :err.message==='413'?'That photo is too large to upload. Try a smaller one.'
+      :'Sorry, saving failed. Check your connection and try again. Your changes are still on the page.');
+  }
+  ed.saving=false;
+}
+
+function initEditor(){
+  cmsStyles();
+  ed.bar=document.createElement('div');ed.bar.id='cmsBar';document.body.appendChild(ed.bar);
+  document.addEventListener('click',e=>{if(e.target.closest('#cmsBar a[href="/admin/"]'))ed.leaving=!hasChanges()||confirm('Leave without saving your changes?')||(e.preventDefault(),false);},true);
+  const wantsEdit=location.hash==='#edit';
+  netlifyIdentity.on('init',user=>{
+    if(user){showIdle();return;}
+    if(wantsEdit){
+      netlifyIdentity.on('login',()=>{netlifyIdentity.close();history.replaceState(null,'',location.pathname);showIdle();});
+      netlifyIdentity.open('login');
+    }else{
+      // after accepting an invite, take the new editor to the full editor
+      netlifyIdentity.on('login',()=>{document.location.href='/admin/';});
+    }
+  });
+  netlifyIdentity.on('logout',()=>location.reload());
+}
+if(window.netlifyIdentity)initEditor();
 </script>
 </body>
 </html>
