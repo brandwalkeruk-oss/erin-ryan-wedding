@@ -1,31 +1,27 @@
 {
   "eyebrow": "Good to Know",
   "heading": "FAQs",
-  "intro": "Everything you need before you pack your bags.",
+  "intro": "Everything you need before you pack your bags",
   "items": [
     {
       "question": "What's the dress code?",
-      "answer": "Think \"elegant garden party in Italy\" — smart and summery. A midi or maxi dress for ladies, a suit or smart blazer for gents. Wedges or block heels are wise if you're on grass. For the BBQ & Pool party on the 21st, bring your swimsuit!"
+      "answer": "Welcome Party - Cocktail/Formal\n\nWedding Day - Formal\n\nBBQ & Pool Party - Swimwear/casual beach/poolside clothing, plenty of sunscreen and a hat"
     },
     {
       "question": "What's the weather like in August?",
-      "answer": "Hot and sunny — expect 28–35°C with very little rain. It's a glorious dry Umbrian heat. Pack sunscreen, a good hat for daytime, and a light layer for evenings, which can cool down beautifully."
+      "answer": "Typically hot and sunny, between 28-35 degrees, with very little rain. There will be plenty of areas for shade during the events throughout the weekend, but we recommend a strong sunscreen and keeping hydrated (not just with alcohol)."
     },
     {
       "question": "Is parking easy at the venue?",
-      "answer": "Yes — parking on site at Forte Sorgnano is easy and free. Note the last 3.5 km of the approach is unmade road; it's well-maintained and fine in a standard hire car."
+      "answer": "Yes — there is plenty of covered parking at the estate. Note the last 3.5 km of the approach is a non-tarmacked road, it's well-maintained and fine in a standard hire car."
     },
     {
-      "question": "Do I need to hire a car?",
-      "answer": "Strongly recommended. The estate is in the Umbrian countryside and not reachable by public transport. A hire car also means you're free to explore between events. Collect from the airport and drop it back there."
-    },
-    {
-      "question": "Are children welcome?",
-      "answer": "Yes — children are warmly welcome. Please include them in your party count when you RSVP so the kitchen can plan accordingly."
+      "question": "Do I need to hire a car or is there a direct train?",
+      "answer": "Recommended, but not essential. Forte Sorgnano is in the Umbrian countryside, but there are train stations around 45 minutes drive away which have direct trains from Rome and Florence, we will either arrange to have someone from the party pick up people from train stations or the venue can provide a shuttle service. Where possible, if there are spaces in cars, we will try to pair people up, so let us know your travel plans!"
     },
     {
       "question": "Is there a gift list?",
-      "answer": "Your presence is the greatest gift. If you'd like to contribute something, we'll share details closer to the date — watch this space."
+      "answer": "Your presence is the greatest gift. If you'd like to contribute something, we'll share details closer to the date."
     }
   ]
 }
