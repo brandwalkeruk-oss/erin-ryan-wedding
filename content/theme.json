@@ -1,7 +1,13 @@
 {
-  "accent": "#8b4039",
-  "green": "#887d5e",
-  "dark": "#cb9a63",
-  "light": "#d2ad88",
-  "text": "#9a4843"
+  "accent": "#8b1a3a",
+  "green": "#6b7c3a",
+  "dark": "#1c2214",
+  "light": "#f5f0e4",
+  "text": "#2e3828",
+  "fonts": {
+    "heading": "Fraunces",
+    "body": "Jost",
+    "accent": "Cormorant Garamond",
+    "script": "Pinyon Script"
+  }
 }
