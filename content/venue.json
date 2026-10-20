@@ -2,13 +2,13 @@
   "eyebrow": "The Venue",
   "heading": "Tenuta di Forte\nSorgnano",
   "paragraphs": [
-    "Our home for the weekend is a Lombard castle that has stood for over a thousand years, crowning a hilltop above the Tuderte valley in central Umbria. Honey-coloured stone, vaulted halls, olive groves and vineyards stretch as far as the eye can see.",
-    "The estate sits between Todi, Spoleto and the wine country of Montefalco — suspended, as they like to say, somewhere between earth and sky."
+    "We welcome you to Tenuta di Forte Sorgnano for the weekend. The estate sits at the top of a hill looking down on a beautiful valley of vineyards and olive groves that stretch as far as the eye can see.\n\nAs you enter the gates, you will go past the four country houses, known as the ‘hamlets’ which date back to the 19th century and have been recently renovated.\n\nAt the peak of the hill, around 500 metres from the hamlets, sits the recently renovated Lombard castle that dates back to the 8th century, which is where all the wedding day activities will be taking place (don’t worry, shuttle buses will escort guests from the hamlets or sister accommodation up to the forte).",
+    "The estate offers numerous amenities and services, including\nits own dedicated restaurant.  You can relax in the wellness area\nor outdoor swimming pool, hike on the trails or play various sports on the pitches. There is also the option to arrange, wine tastings, cooking classes or yoga sessions."
   ],
   "details": [
     {
       "label": "Address",
-      "value": "Gualdo Cattaneo (PG)"
+      "value": "Via Cerquiglino, 62, 06035 Gualdo Cattaneo PG, Italy"
     },
     {
       "label": "Region",
@@ -23,15 +23,15 @@
   "button_link": "https://www.fortesorgnano.com/en/",
   "photos": [
     {
-      "image": "https://www.fortesorgnano.com/wp-content/uploads/2018/10/DSC_3511-1-1.jpg",
+      "image": "/images/uploads/20261020212550-2-forte-sorgnano-wedding30.jpg",
       "alt": "Forte Sorgnano castle"
     },
     {
-      "image": "https://www.fortesorgnano.com/wp-content/uploads/2018/10/DSC_7236-1.jpg",
+      "image": "/images/uploads/20261020212550-3-7-119.jpg",
       "alt": "The estate grounds"
     },
     {
-      "image": "https://www.fortesorgnano.com/wp-content/uploads/2018/10/DSC_6166.jpg",
+      "image": "/images/uploads/20261020212550-4-4034b291-5ad21f57-1.jpg",
       "alt": "Umbrian hillside"
     }
   ]
