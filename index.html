@@ -932,17 +932,27 @@ function initEditor(){
   cmsStyles();
   ed.bar=document.createElement('div');ed.bar.id='cmsBar';document.body.appendChild(ed.bar);
   document.addEventListener('click',e=>{if(e.target.closest('#cmsBar a[href="/admin/"]'))ed.leaving=!hasChanges()||confirm('Leave without saving your changes?')||(e.preventDefault(),false);},true);
-  const wantsEdit=location.hash==='#edit';
+  ed.wantsEdit=location.hash==='#edit';
+  ed.ready=false;
+  const clearHash=()=>{if(location.hash==='#edit')history.replaceState(null,'',location.pathname+location.search);};
+  // open the login box (or show the Edit button if already logged in)
+  ed.request=()=>{
+    ed.wantsEdit=true;
+    if(netlifyIdentity.currentUser()){clearHash();if(!ed.on)showIdle();return;}
+    netlifyIdentity.open('login');
+  };
   netlifyIdentity.on('init',user=>{
-    if(user){showIdle();return;}
-    if(wantsEdit){
-      netlifyIdentity.on('login',()=>{netlifyIdentity.close();history.replaceState(null,'',location.pathname);showIdle();});
-      netlifyIdentity.open('login');
-    }else{
-      // after accepting an invite, take the new editor to the full editor
-      netlifyIdentity.on('login',()=>{document.location.href='/admin/';});
-    }
+    ed.ready=true;
+    if(user){clearHash();showIdle();return;}
+    // only listen for logins that happen after the page loaded logged-out
+    netlifyIdentity.on('login',()=>{
+      if(ed.wantsEdit){netlifyIdentity.close();clearHash();if(!ed.on)showIdle();}
+      else document.location.href='/admin/';   // after accepting an invite, go to the full editor
+    });
+    if(ed.wantsEdit)ed.request();
   });
+  // adding #edit to the address without reloading the page
+  window.addEventListener('hashchange',()=>{if(location.hash==='#edit'&&ed.ready)ed.request();});
   netlifyIdentity.on('logout',()=>location.reload());
 }
 if(window.netlifyIdentity)initEditor();
