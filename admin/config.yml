@@ -203,3 +203,15 @@ collections:
           - { label: "Thank-you message (attending)", name: "accepted_message", widget: "text" }
           - { label: "Heading (not attending)", name: "declined_title", widget: "string" }
           - { label: "Message (not attending)", name: "declined_message", widget: "text", hint: "{name} is replaced with the guest's full name." }
+
+      # ---------------------------------------------------------------
+      - label: "9. Colours"
+        name: "theme"
+        file: "content/theme.json"
+        description: "Changes colours across the whole site. Keep the dark and light backgrounds clearly different so text stays readable. Original colours: accent #8b1a3a, green #6b7c3a, dark #1c2214, light #f5f0e4, text #2e3828."
+        fields:
+          - { label: "Accent (buttons, the '&', highlighted words)", name: "accent", widget: "color", allowInput: true }
+          - { label: "Green (date numbers, small details, lines)", name: "green", widget: "color", allowInput: true }
+          - { label: "Dark background (What's On, RSVP, footer)", name: "dark", widget: "color", allowInput: true }
+          - { label: "Light background (light sections, menu bar)", name: "light", widget: "color", allowInput: true }
+          - { label: "Main text", name: "text", widget: "color", allowInput: true }
