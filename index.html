@@ -7,7 +7,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..500&family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400;1,500;1,600&family=Jost:wght@300;400;500&family=Pinyon+Script&display=swap" rel="stylesheet">
-<script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+<!-- Netlify login widget v2.0.3 (MIT), kept in the site so it always loads -->
+<script src="/js/netlify-identity-widget.js"></script>
 <script>setTimeout(()=>document.documentElement.classList.remove('loading'),2500)</script>
 <style>
 :root{
@@ -955,7 +956,25 @@ function initEditor(){
   window.addEventListener('hashchange',()=>{if(location.hash==='#edit'&&ed.ready)ed.request();});
   netlifyIdentity.on('logout',()=>location.reload());
 }
-if(window.netlifyIdentity)initEditor();
+// start the editor; with backups in case the login widget is slow or blocked
+(function bootEditor(){
+  const wantsEdit=location.hash==='#edit';
+  if(window.netlifyIdentity){
+    initEditor();
+    setTimeout(()=>{
+      if(ed.ready)return;
+      console.warn('[editor] login widget did not start by itself; starting it now');
+      try{
+        const u=netlifyIdentity.currentUser&&netlifyIdentity.currentUser();
+        if(u){ed.ready=true;showIdle();}
+        else netlifyIdentity.init();
+      }catch(e){console.error('[editor]',e);if(wantsEdit)msg('The login system could not start. Please reload the page or try a different browser.');}
+    },3000);
+  }else if(wantsEdit){
+    cmsStyles();ed.bar=document.createElement('div');ed.bar.id='cmsBar';document.body.appendChild(ed.bar);
+    msg('The login system could not load. Turn off any ad or tracker blocker for this site, then reload the page.');
+  }
+})();
 </script>
 </body>
 </html>
