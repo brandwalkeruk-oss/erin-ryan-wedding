@@ -78,14 +78,20 @@
     "rsvp|heading": "#764842",
     "rsvp|deadline": "#44483a",
     "general|welcome_text": "#44483a",
-    "general|welcome_subtext": "#44483a"
+    "general|welcome_subtext": "#44483a",
+    "general|footer.date_line": "#bcc5a0",
+    "general|footer.venue_name": "#bcc5a0",
+    "general|banner.heading": "#bcc5a0",
+    "general|footer.address": "#bcc5a0",
+    "general|footer.credit": "#bcc5a0"
   },
   "backgrounds": {
     "whatson": "#e6d6c8",
     "rsvp": "#e6d6c8",
     "welcome": "#f2efe2",
     "strip": "#44483a",
-    "banner": "#44483a"
+    "banner": "#44483a",
+    "footer": "#656b57"
   },
   "fonts": {
     "general|name_1": "Pinyon Script",
@@ -161,6 +167,8 @@
     "faqs|eyebrow": "Playfair Display",
     "general|welcome_signature": "Pinyon Script",
     "travel|eyebrow": "Playfair Display",
-    "general|strip_text": "Playfair Display"
+    "general|strip_text": "Playfair Display",
+    "general|footer.date_line": "Playfair Display",
+    "general|footer.venue_name": "Playfair Display"
   }
 }
