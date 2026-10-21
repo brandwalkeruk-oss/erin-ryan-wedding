@@ -2,11 +2,11 @@
   "accent": "#8b1a3a",
   "green": "#6b7c3a",
   "dark": "#1c2214",
-  "light": "#f5f0e4",
+  "light": "#f4efe3",
   "text": "#2e3828",
   "fonts": {
-    "heading": "Fraunces",
-    "body": "Jost",
+    "heading": "Playfair Display",
+    "body": "Playfair Display",
     "accent": "Cormorant Garamond",
     "script": "Pinyon Script"
   }
