@@ -55,28 +55,37 @@
     "things-to-do|items.4.distance": "#764842",
     "things-to-do|items.5.distance": "#764842",
     "faqs|items.0.question": "#764842",
-    "faqs|items.0.answer": "#764842",
+    "faqs|items.0.answer": "#44483a",
     "faqs|items.1.question": "#764842",
-    "faqs|items.1.answer": "#764842",
-    "faqs|items.2.answer": "#764842",
+    "faqs|items.1.answer": "#44483a",
+    "faqs|items.2.answer": "#44483a",
     "faqs|items.2.question": "#764842",
     "faqs|items.3.question": "#764842",
-    "faqs|items.3.answer": "#764842",
+    "faqs|items.3.answer": "#44483a",
     "faqs|items.4.question": "#764842",
-    "faqs|items.4.answer": "#764842",
+    "faqs|items.4.answer": "#44483a",
     "faqs|heading": "#764842",
-    "faqs|intro": "#764842",
+    "faqs|intro": "#44483a",
     "faqs|eyebrow": "#764842",
     "travel|heading": "#764842",
     "travel|eyebrow": "#764842",
     "venue|paragraphs.1": "#44483a",
     "venue|paragraphs.0": "#44483a",
-    "general|welcome_signature": "#764844"
+    "general|welcome_signature": "#764844",
+    "weekend|eyebrow": "#764844",
+    "weekend|intro": "#44483a",
+    "rsvp|eyebrow": "#764842",
+    "rsvp|heading": "#764842",
+    "rsvp|deadline": "#44483a",
+    "general|welcome_text": "#44483a",
+    "general|welcome_subtext": "#44483a"
   },
   "backgrounds": {
     "whatson": "#e6d6c8",
-    "rsvp": "#e9e5da",
-    "welcome": "#f2efe2"
+    "rsvp": "#e6d6c8",
+    "welcome": "#f2efe2",
+    "strip": "#44483a",
+    "banner": "#44483a"
   },
   "fonts": {
     "general|name_1": "Pinyon Script",
@@ -151,6 +160,7 @@
     "faqs|intro": "Playfair Display",
     "faqs|eyebrow": "Playfair Display",
     "general|welcome_signature": "Pinyon Script",
-    "travel|eyebrow": "Playfair Display"
+    "travel|eyebrow": "Playfair Display",
+    "general|strip_text": "Playfair Display"
   }
 }
