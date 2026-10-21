@@ -70,11 +70,13 @@
     "travel|heading": "#764842",
     "travel|eyebrow": "#764842",
     "venue|paragraphs.1": "#44483a",
-    "venue|paragraphs.0": "#44483a"
+    "venue|paragraphs.0": "#44483a",
+    "general|welcome_signature": "#764844"
   },
   "backgrounds": {
     "whatson": "#e6d6c8",
-    "rsvp": "#e9e5da"
+    "rsvp": "#e9e5da",
+    "welcome": "#f2efe2"
   },
   "fonts": {
     "general|name_1": "Pinyon Script",
