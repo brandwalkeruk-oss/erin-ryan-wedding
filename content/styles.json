@@ -68,7 +68,9 @@
     "faqs|intro": "#764842",
     "faqs|eyebrow": "#764842",
     "travel|heading": "#764842",
-    "travel|eyebrow": "#764842"
+    "travel|eyebrow": "#764842",
+    "venue|paragraphs.1": "#44483a",
+    "venue|paragraphs.0": "#44483a"
   },
   "backgrounds": {
     "whatson": "#e6d6c8",
