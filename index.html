@@ -348,8 +348,8 @@ body{transition:opacity .4s}
 /* RSVP / Save the Date form on the printed card.
    Built from pieces of the card so the corners and the wavy sides keep their shape at any height:
    top + bottom corners, one wave centred on each side, straight sides in between. */
-.rsvp-wrap.has-border.card-mode{border:0;border-image:none;background:#eadacd;max-width:760px;position:relative;
-  --cw:min(100vw,760px);padding:calc(var(--cw)*.19) calc(var(--cw)*.15) calc(var(--cw)*.18);box-shadow:0 30px 60px -30px rgba(0,0,0,.6)}
+.rsvp-wrap.has-border.card-mode{border:0;border-image:none;background:#eadacd;max-width:980px;position:relative;
+  --cw:min(100vw,980px);padding:calc(var(--cw)*.15) calc(var(--cw)*.17) calc(var(--cw)*.14);box-shadow:0 30px 60px -30px rgba(0,0,0,.6)}
 .rsvp-wrap.card-mode>*:not(.card-layer){position:relative;z-index:1}
 .card-layer{position:absolute;left:0;right:0;pointer-events:none;background-size:100% auto}
 .card-upper{top:0;height:50%;background-image:url('/images/card/upper.jpg');background-repeat:repeat-y;background-position:top}
@@ -358,7 +358,7 @@ body{transition:opacity .4s}
   background-repeat:no-repeat;background-position:top,bottom,center}
 .rsvp-wrap.card-mode .rsvp-card{border:0;padding:0;background:transparent}
 .rsvp-wrap.card-mode .section-head{margin-bottom:clamp(24px,4vw,40px)}
-@media(max-width:600px){.rsvp .wrap.rsvp-wrap.has-border.card-mode{padding:calc(var(--cw)*.2) calc(var(--cw)*.14) calc(var(--cw)*.19)}}
+@media(max-width:600px){.rsvp .wrap.rsvp-wrap.has-border.card-mode{padding:calc(var(--cw)*.17) calc(var(--cw)*.165) calc(var(--cw)*.16)}}
 
 /* phones: bigger, with the names clearly the largest */
 @media(max-width:600px){
