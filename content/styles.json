@@ -87,11 +87,13 @@
   },
   "backgrounds": {
     "whatson": "#e6d6c8",
-    "rsvp": "#e6d6c8",
+    "rsvp": "#e5d6c8",
     "welcome": "#e6d6c8",
     "strip": "#44483a",
     "banner": "#44483a",
-    "footer": "#656b57"
+    "footer": "#656b57",
+    "stay": "#e6d6c8",
+    "faq": "#e6d6c8"
   },
   "fonts": {
     "general|name_1": "Pinyon Script",
