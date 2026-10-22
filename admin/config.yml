@@ -194,7 +194,6 @@ collections:
           - { label: "Small heading", name: "eyebrow", widget: "string" }
           - { label: "Heading", name: "heading", widget: "string" }
           - { label: "Reply-by date", name: "deadline", widget: "string" }
-          - { label: "Border image (frames this section)", name: "border_image", widget: "image", required: false, hint: "Upload the border from your Save the Dates. A PNG with a see-through or plain middle works best." }
           - label: "Email address RSVPs are sent to"
             name: "email"
             widget: "string"

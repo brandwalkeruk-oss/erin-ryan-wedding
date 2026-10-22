@@ -345,6 +345,21 @@ body{transition:opacity .4s}
 .cd-label{font-size:.52rem;margin-top:.45em;color:var(--c-olive);font-weight:500}
 .scroll-cue{color:var(--c-olive);text-shadow:0 0 10px rgba(255,248,235,.9)}
 .scroll-cue span{background:linear-gradient(var(--c-olive),transparent)}
+/* RSVP / Save the Date form on the printed card.
+   Built from pieces of the card so the corners and the wavy sides keep their shape at any height:
+   top + bottom corners, one wave centred on each side, straight sides in between. */
+.rsvp-wrap.has-border.card-mode{border:0;border-image:none;background:#eadacd;max-width:760px;position:relative;
+  --cw:min(100vw,760px);padding:calc(var(--cw)*.19) calc(var(--cw)*.15) calc(var(--cw)*.18);box-shadow:0 30px 60px -30px rgba(0,0,0,.6)}
+.rsvp-wrap.card-mode>*:not(.card-layer){position:relative;z-index:1}
+.card-layer{position:absolute;left:0;right:0;pointer-events:none;background-size:100% auto}
+.card-upper{top:0;height:50%;background-image:url('/images/card/upper.jpg');background-repeat:repeat-y;background-position:top}
+.card-lower{bottom:0;height:50%;background-image:url('/images/card/lower.jpg');background-repeat:repeat-y;background-position:bottom}
+.card-frame{top:0;bottom:0;background-image:url('/images/card/top.jpg'),url('/images/card/bottom.jpg'),url('/images/card/wave.jpg');
+  background-repeat:no-repeat;background-position:top,bottom,center}
+.rsvp-wrap.card-mode .rsvp-card{border:0;padding:0;background:transparent}
+.rsvp-wrap.card-mode .section-head{margin-bottom:clamp(24px,4vw,40px)}
+@media(max-width:600px){.rsvp .wrap.rsvp-wrap.has-border.card-mode{padding:calc(var(--cw)*.2) calc(var(--cw)*.14) calc(var(--cw)*.19)}}
+
 /* phones: bigger, with the names clearly the largest */
 @media(max-width:600px){
   .hero-names{font-size:clamp(3.4rem,17vw,4.6rem);margin:.05em 0 0}
@@ -559,7 +574,8 @@ body.cms-editing .pstrip-empty{display:block !important;background:repeating-lin
 
 <!-- RSVP -->
 <section class="rsvp pad" id="rsvp" data-section="rsvp">
-  <div class="wrap rsvp-wrap" id="rsvpWrap">
+  <div class="wrap rsvp-wrap has-border card-mode" id="rsvpWrap">
+    <div class="card-layer card-upper" aria-hidden="true"></div><div class="card-layer card-lower" aria-hidden="true"></div><div class="card-layer card-frame" aria-hidden="true"></div>
     <div class="section-head reveal">
       <p class="eyebrow" id="rsvpEyebrow"></p>
       <h2 id="rsvpHeading"></h2>
@@ -703,8 +719,6 @@ function render(){
   }));
 
   // rsvp
-  $('rsvpWrap').dataset.cmsImg='rsvp|border_image';$('rsvpWrap').dataset.bgImg='1';
-  if(r.border_image)setBorderImage($('rsvpWrap'),imgUrl(r.border_image),r.border_image);
   set('rsvpEyebrow',r.eyebrow,'rsvp|eyebrow');set('rsvpHeading',r.heading,'rsvp|heading');set('rsvpDeadline',r.deadline,'rsvp|deadline');
 
   startCountdown(g.countdown_to);
