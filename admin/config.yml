@@ -84,9 +84,10 @@ collections:
               - { label: "Value", name: "value", widget: "string" }
           - { label: "Button text", name: "button_text", widget: "string" }
           - { label: "Button link", name: "button_link", widget: "string" }
-          - label: "Photos (first one shows largest)"
+          - label: "Photos (up to 4, shown as a grid)"
             name: "photos"
             widget: "list"
+            max: 4
             summary: "{{fields.alt}}"
             fields:
               - { label: "Photo", name: "image", widget: "image" }
@@ -193,6 +194,7 @@ collections:
           - { label: "Small heading", name: "eyebrow", widget: "string" }
           - { label: "Heading", name: "heading", widget: "string" }
           - { label: "Reply-by date", name: "deadline", widget: "string" }
+          - { label: "Border image (frames this section)", name: "border_image", widget: "image", required: false, hint: "Upload the border from your Save the Dates. A PNG with a see-through or plain middle works best." }
           - label: "Email address RSVPs are sent to"
             name: "email"
             widget: "string"
