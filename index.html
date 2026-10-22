@@ -594,17 +594,26 @@ body.cms-editing .pstrip-empty{display:block !important;background:repeating-lin
         </div>
         <div class="f-group"><label>Song request <span class="f-optional">(optional)</span></label><input type="text" id="song" placeholder="What banger gets you off your chair?"></div>
         <div class="f-group"><label>Anything else? <span class="f-optional">(optional)</span></label><textarea id="note" placeholder="Wise words, embarrassing stories, unsolicited advice…"></textarea></div>
+        <input type="text" id="botField" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;opacity:0">
         <button class="rsvp-submit" id="rsvpSubmit">Send RSVP ↗</button>
+        <div class="f-err" id="err-send">Sorry, your RSVP couldn't be sent. Please check your connection and try again.</div>
       </div>
       <div class="rsvp-confirm" id="rsvpConfirm">
         <div class="rc-mark"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></div>
         <h3 id="confTitle">Grazie mille!</h3>
         <p id="confMsg"></p>
-        <a class="mail-btn" id="mailBtn" href="#">Send by email</a>
       </div>
     </div>
   </div>
 </section>
+
+<!-- Netlify Forms: this hidden copy lets Netlify detect the RSVP form when the site is published.
+     Replies are sent to it from the visible form above and appear in Netlify > Forms. -->
+<form name="rsvp" data-netlify="true" netlify-honeypot="bot-field" hidden>
+  <input name="bot-field"><input name="name"><input name="email"><input name="attending">
+  <textarea name="travel_plans"></textarea><textarea name="accommodation"></textarea><input name="party_size">
+  <input name="dietary"><input name="song"><textarea name="note"></textarea>
+</form>
 
 <!-- FOOTER -->
 <footer data-section="footer">
@@ -750,23 +759,28 @@ function startReveal(){
   document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
 }
 
-$('rsvpSubmit').addEventListener('click',()=>{
+$('rsvpSubmit').addEventListener('click',async()=>{
   const r=C.rsvp||{};
-  const fname=$('fname'),email=$('email');
+  const fname=$('fname'),email=$('email'),btn=$('rsvpSubmit');
   let ok=true;
   document.querySelectorAll('.f-err').forEach(e=>e.style.display='none');
   if(!fname.value.trim()){$('err-name').style.display='block';ok=false;}
   if(!/^\S+@\S+\.\S+$/.test(email.value.trim())){$('err-email').style.display='block';ok=false;}
-  if(!ok)return;
+  if(!ok||btn.disabled)return;
   const v=id=>$(id).value.trim();
   const attend=v('attend'),declined=attend.includes("can't");
   const first=v('fname').split(' ')[0];
-  const body=[
-    `Name: ${v('fname')}`,`Email: ${v('email')}`,`RSVP: ${attend}`,
-    `Travel plans: ${v('travel_plans')||'—'}`,`Accommodation: ${v('accom')||'—'}`,`Party size: ${v('party')}`,
-    `Dietary: ${v('diet')||'none'}`,`Song: ${v('song')||'—'}`,`Note: ${v('note')||'—'}`
-  ].join('\r\n');
-  $('mailBtn').href=`mailto:${encodeURIComponent(r.email||'')}?subject=${encodeURIComponent(r.email_subject||'RSVP')}&body=${encodeURIComponent(body)}`;
+  // send the reply to Netlify Forms (saved in Netlify > Forms, and emailed to you if notifications are on)
+  const data={'form-name':'rsvp','bot-field':$('botField').value,name:v('fname'),email:v('email'),attending:attend,
+    travel_plans:v('travel_plans'),accommodation:v('accom'),party_size:v('party'),dietary:v('diet'),song:v('song'),note:v('note')};
+  btn.disabled=true;btn.textContent='Sending…';
+  try{
+    const res=await fetch('/',{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:new URLSearchParams(data).toString()});
+    if(!res.ok)throw new Error(res.status);
+  }catch(err){
+    console.error('RSVP not sent',err);
+    btn.disabled=false;btn.textContent='Send RSVP ↗';$('err-send').style.display='block';return;
+  }
   $('confTitle').textContent=(declined?(r.declined_title||"We'll miss you"):(r.accepted_title||'Grazie mille, {name}!')).replace('{name}',first);
   $('confMsg').textContent=(declined?(r.declined_message||''):(r.accepted_message||'')).replace('{name}',v('fname'));
   $('rsvpForm').style.display='none';
