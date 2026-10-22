@@ -552,7 +552,7 @@ function render(){
 
   document.title=g.page_title||document.title;
   $('navMono').innerHTML=`${esc((g.name_1||'')[0]||'')}<span style="font-family:var(--f-accent);font-style:italic;color:var(--c-accent)">&amp;</span>${esc((g.name_2||'')[0]||'')}`;
-  if(g.hero_image)$('heroImg').style.backgroundImage=`url('${g.hero_image}')`;
+  if(g.hero_image)setBgImage($('heroImg'),g.hero_image);
   $('heroImg').dataset.cmsImg='general|hero_image';$('landscape').dataset.cmsImg='general|landscape.image';
   set('heroEyebrow',g.hero_eyebrow,'general|hero_eyebrow');set('name1',g.name_1,'general|name_1');set('name2',g.name_2,'general|name_2');
   set('heroTagline',g.hero_tagline,'general|hero_tagline');set('heroLoc',g.hero_location,'general|hero_location');
@@ -562,8 +562,7 @@ function render(){
   const ls=g.landscape||{};
   set('landscapeEyebrow',ls.eyebrow,'general|landscape.eyebrow');set('landscapeHeading',ls.heading,'general|landscape.heading');set('landscapeText',ls.text,'general|landscape.text');
   const li=$('landscapeImg');li.alt=ls.heading||'';
-  li.onerror=()=>{li.parentElement.style.background='linear-gradient(160deg,#6c7455,#a9824a,#2a2017)';li.remove();};
-  li.src=ls.image||'';
+  setImg(li,ls.image,()=>{li.parentElement.style.background='linear-gradient(160deg,#6c7455,#a9824a,#2a2017)';li.remove();});
   const bn=g.banner||{};set('bannerHeading',bn.heading,'general|banner.heading');set('bannerText',bn.text,'general|banner.text');
   const ft=g.footer||{};
   $('footNames').textContent=`${g.name_1} & ${g.name_2}`;
@@ -576,8 +575,8 @@ function render(){
   $('venueMeta').innerHTML=(v.details||[]).map((d,i)=>`<div><span ${cms('venue|details.'+i+'.label')}>${esc(d.label)}</span><strong ${cms('venue|details.'+i+'.value')}>${esc(d.value)}</strong></div>`).join('');
   set('venueBtn',v.button_text||'','venue|button_text');$('venueBtn').href=v.button_link||'#';
   const fb=['linear-gradient(160deg,#caa86f,#8c3d1d 70%,#525940)','linear-gradient(150deg,#caa86f,#6c7455)','linear-gradient(160deg,#e7d8bd,#b3532a)'];
-  $('venuePhotos').innerHTML=(v.photos||[]).map((p,i)=>`<div class="pstrip-item" data-cms-img="venue|photos.${i}.image"><img src="${esc(p.image)}" alt="${esc(p.alt)}" loading="lazy"></div>`).join('');
-  $('venuePhotos').querySelectorAll('img').forEach((img,i)=>img.onerror=()=>{img.parentElement.style.background=fb[i%3];img.remove();});
+  $('venuePhotos').innerHTML=(v.photos||[]).map((p,i)=>`<div class="pstrip-item" data-cms-img="venue|photos.${i}.image"><img data-src="${esc(p.image)}" alt="${esc(p.alt)}" loading="lazy"></div>`).join('');
+  $('venuePhotos').querySelectorAll('img').forEach((img,i)=>setImg(img,img.dataset.src,()=>{img.parentElement.style.background=fb[i%3];img.remove();}));
 
   // weekend
   set('weekendEyebrow',w.eyebrow,'weekend|eyebrow');set('weekendHeading',w.heading,'weekend|heading');set('weekendIntro',w.intro,'weekend|intro');
@@ -726,9 +725,52 @@ function applyFonts(f){Object.keys(FONT_ROLES).forEach(r=>{if(FONTS[f[r]]){loadF
 const fontOptions=sel=>Object.entries(FONT_GROUPS).map(([g,label])=>`<optgroup label="${label}">${
   Object.keys(FONTS).filter(n=>FONTS[n].g===g).map(n=>`<option value="${n}"${n===sel?' selected':''} style="font-family:${fontStack(n)}">${n}</option>`).join('')}</optgroup>`).join('');
 
+/* ---------- where the content comes from ----------
+   The text, settings and uploaded photos are read straight from the GitHub repo,
+   so edits show on the site without Netlify having to publish (which costs credits).
+   If GitHub can't be reached (or the repo is private), the copy published on Netlify is used. */
+const REPO={owner:'brandwalkeruk-oss',name:'erin-ryan-wedding',branch:'main'};
+const RAW=`https://raw.githubusercontent.com/${REPO.owner}/${REPO.name}/${REPO.branch}/`;
+const hasSession=(()=>{try{return !!localStorage.getItem('gotrue.user');}catch(e){return false;}})();
+const cacheBust='?v='+Math.floor(Date.now()/60000);
+let identityReady=()=>{};
+const identityP=new Promise(res=>{identityReady=res;setTimeout(()=>res(null),5000);});
+if(window.netlifyIdentity)netlifyIdentity.on('init',u=>identityReady(u||null));
+const decodeB64=str=>new TextDecoder().decode(Uint8Array.from(atob(str.replace(/\n/g,'')),c=>c.charCodeAt(0)));
+async function readEditorCopy(path){            // logged-in editors get the very latest saved copy
+  const user=await identityP;if(!user)throw new Error('no user');
+  const token=await user.jwt();
+  const r=await fetch(`/.netlify/git/github/contents/${path}?ref=${REPO.branch}`,{headers:{Authorization:`Bearer ${token}`}});
+  if(r.status===404)return null;
+  if(!r.ok)throw new Error(r.status);
+  return JSON.parse(decodeB64((await r.json()).content));
+}
+async function loadJSON(path,optional){
+  if(hasSession){try{const d=await readEditorCopy(path);if(d)return d;if(optional)return {};}catch(e){}}
+  try{const r=await fetch(RAW+path+cacheBust);if(r.ok)return await r.json();}catch(e){}
+  const r=await fetch('/'+path,{cache:'no-cache'});
+  if(r.ok)return r.json();
+  if(optional)return {};
+  throw new Error('Could not load '+path);
+}
+// photos uploaded through the editors live in the repo, not yet on Netlify
+const imgUrl=p=>/^\/?images\/uploads\//.test(p||'')?RAW+String(p).replace(/^\//,''):(p||'');
+function setBgImage(el,p){
+  const url=imgUrl(p);if(!url)return;
+  const probe=new Image();
+  probe.onload=()=>el.style.backgroundImage=`url('${url}')`;
+  probe.onerror=()=>{if(url!==p)el.style.backgroundImage=`url('${p}')`;};
+  probe.src=url;
+}
+function setImg(img,p,onFail){
+  const url=imgUrl(p);
+  img.onerror=()=>{if(url!==p&&img.src!==new URL(p,location.href).href){img.src=p;}else onFail&&onFail();};
+  img.src=url;
+}
+
 const THEME_DEFAULT={accent:'#8b1a3a',green:'#6b7c3a',dark:'#1c2214',light:'#f5f0e4',text:'#2e3828'};
 let THEME={...THEME_DEFAULT};
-fetch('/content/theme.json',{cache:'no-cache'}).then(r=>r.ok?r.json():{}).then(t=>{
+loadJSON('content/theme.json',true).then(t=>{
   Object.keys(THEME_DEFAULT).forEach(k=>{if(/^#[0-9a-f]{6}$/i.test(t[k]||''))THEME[k]=t[k].toLowerCase();});
   if(t.fonts)Object.keys(FONT_ROLES).forEach(r=>{if(FONTS[t.fonts[r]])SITE_FONTS[r]=t.fonts[r];});
   applyFonts(SITE_FONTS);
@@ -740,7 +782,7 @@ fetch('/content/theme.json',{cache:'no-cache'}).then(r=>r.ok?r.json():{}).then(t
 /* ---------- individual text / section colours (content/styles.json) ---------- */
 let STYLES={text:{},backgrounds:{},fonts:{}};
 const isHex=v=>/^#[0-9a-f]{6}$/i.test(v||'');
-const stylesP=fetch('/content/styles.json',{cache:'no-cache'}).then(r=>r.ok?r.json():{}).catch(()=>({}));
+const stylesP=loadJSON('content/styles.json',true).catch(()=>({}));
 function applyStyles(st){
   STYLES={text:{...(st&&st.text||{})},backgrounds:{...(st&&st.backgrounds||{})},fonts:{...(st&&st.fonts||{})}};
   Object.entries(STYLES.fonts).forEach(([k,v])=>{if(FONTS[v]){loadFont(v);document.querySelectorAll(`[data-cms="${CSS.escape(k)}"]`).forEach(el=>el.style.fontFamily=fontStack(v));}});
@@ -748,7 +790,7 @@ function applyStyles(st){
   Object.entries(STYLES.backgrounds).forEach(([k,v])=>{const sec=document.querySelector(`[data-section="${CSS.escape(k)}"]`);if(sec&&isHex(v))sec.style.background=v;});
 }
 
-Promise.all(FILES.map(n=>fetch(`/content/${n}.json`,{cache:'no-cache'}).then(r=>r.json()).then(d=>C[n]=d)))
+Promise.all(FILES.map(n=>loadJSON(`content/${n}.json`).then(d=>C[n]=d)))
   .then(render)
   .then(()=>stylesP).then(applyStyles)
   .catch(err=>console.error('Could not load site content',err))
@@ -1016,6 +1058,35 @@ async function gh(path,opts={}){
   if(!r.ok)throw new Error(`${r.status}`);
   return r.json();
 }
+// any GitHub API call through Netlify's Git Gateway
+async function ghApi(path,opts={}){
+  const user=netlifyIdentity.currentUser();
+  if(!user)throw new Error('401');
+  const token=await user.jwt();
+  const r=await fetch(`/.netlify/git/github/${path}`,{...opts,headers:{'Content-Type':'application/json',Authorization:`Bearer ${token}`}});
+  if(!r.ok)throw new Error(`${r.status}`);
+  return r.status===204?{}:r.json();
+}
+// save several files as ONE commit (so Netlify sees one change, not several)
+async function commitFiles(build,message){
+  for(let attempt=0;attempt<2;attempt++){
+    const ref=await ghApi(`git/refs/heads/${CMS_BRANCH}`);
+    const headSha=ref.object.sha;
+    const head=await ghApi(`git/commits/${headSha}`);
+    const readAtHead=async path=>{try{const f=await ghApi(`contents/${path.split('/').map(encodeURIComponent).join('/')}?ref=${headSha}`);return JSON.parse(unb64(f.content));}
+      catch(e){if(e.message==='404')return null;throw e;}};
+    const files=await build(readAtHead);
+    const tree=[];
+    for(const f of files){
+      const blob=await ghApi('git/blobs',{method:'POST',body:JSON.stringify({content:f.base64||b64(f.text),encoding:'base64'})});
+      tree.push({path:f.path,mode:'100644',type:'blob',sha:blob.sha});
+    }
+    const newTree=await ghApi('git/trees',{method:'POST',body:JSON.stringify({base_tree:head.tree.sha,tree})});
+    const commit=await ghApi('git/commits',{method:'POST',body:JSON.stringify({message,tree:newTree.sha,parents:[headSha]})});
+    try{await ghApi(`git/refs/heads/${CMS_BRANCH}`,{method:'PATCH',body:JSON.stringify({sha:commit.sha,force:false})});return;}
+    catch(e){if(e.message!=='422'||attempt)throw e;}   // someone else saved at the same moment: rebuild on top and retry once
+  }
+}
 const b64=str=>{const bytes=new TextEncoder().encode(str);let bin='';bytes.forEach(b=>bin+=String.fromCharCode(b));return btoa(bin);};
 const unb64=str=>new TextDecoder().decode(Uint8Array.from(atob(str.replace(/\n/g,'')),c=>c.charCodeAt(0)));
 const slug=s=>s.toLowerCase().replace(/\.[^.]+$/,'').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,40)||'photo';
@@ -1027,52 +1098,49 @@ async function saveEdits(){
   const byFile={};
   const add=(file,path,val,done)=>(byFile[file]=byFile[file]||[]).push([path,val,done]);
   try{
-    // 1. upload new photos first
+    // collect everything that changed
     const stamp=new Date().toISOString().replace(/[-:T]/g,'').slice(0,14);
-    let n=0;
+    const photoFiles=[];let n=0;
     for(const [key,ph] of Object.entries(ed.photos)){
-      sb.textContent='Uploading photo…';
       const fp=`images/uploads/${stamp}-${++n}-${slug(ph.name)}.jpg`;
-      await gh(fp,{method:'PUT',body:JSON.stringify({message:`Upload ${fp} (on-page editor)`,branch:CMS_BRANCH,content:ph.base64})});
+      photoFiles.push({path:fp,base64:ph.base64});
       add(ph.file,ph.path,'/'+fp,()=>{delete ed.photos[key];});
     }
-    // 2. text changes
     document.querySelectorAll('[data-cms].cms-changed').forEach(el=>{
       const [file,path]=el.dataset.cms.split('|');const val=clean(serialize(el));
       add(file,path,val,()=>{el.dataset.orig=val;el.classList.remove('cms-changed');});
     });
-    // 3. save each content file (reading the latest version first, so /admin edits aren't overwritten)
-    sb.textContent='Saving…';
-    for(const [file,edits] of Object.entries(byFile)){
-      const fp=`content/${file}.json`;
-      const cur=await gh(fp);
-      const data=JSON.parse(unb64(cur.content));
-      edits.forEach(([path,val])=>setP(data,path,val));
-      await gh(fp,{method:'PUT',body:JSON.stringify({message:`Update ${file} (on-page editor)`,branch:CMS_BRANCH,sha:cur.sha,
-        content:b64(JSON.stringify(data,null,2)+'\n')})});
-      C[file]=data;edits.forEach(([, ,done])=>done());
-    }
+    const doTheme=themeChanged(),doStyles=stylesChanged();
+    const results={};
+    if(photoFiles.length)sb.textContent='Uploading photo…';
+    // build the new versions of each file on top of the latest saved copy (so /admin edits aren't overwritten)
+    await commitFiles(async read=>{
+      const files=[...photoFiles];
+      for(const [file,edits] of Object.entries(byFile)){
+        const data=await read(`content/${file}.json`);if(!data)throw new Error('missing '+file);
+        edits.forEach(([path,val])=>setP(data,path,val));
+        results[file]=data;files.push({path:`content/${file}.json`,text:JSON.stringify(data,null,2)+'\n'});
+      }
+      if(doTheme){
+        const t={...(ed.theme||THEME),fonts:ed.fonts||SITE_FONTS};
+        files.push({path:'content/theme.json',text:JSON.stringify(t,null,2)+'\n'});
+      }
+      if(doStyles){
+        const cur=(await read('content/styles.json'))||{};
+        cur.text=cur.text||{};cur.backgrounds=cur.backgrounds||{};cur.fonts=cur.fonts||{};
+        ['text','backgrounds','fonts'].forEach(g=>Object.entries(ed.styles[g]).forEach(([k,v])=>{if(v===null)delete cur[g][k];else cur[g][k]=v;}));
+        results.__styles=cur;files.push({path:'content/styles.json',text:JSON.stringify(cur,null,2)+'\n'});
+      }
+      return files;
+    },'Update website (on-page editor)');
+    // saved: tidy up the editor state
+    for(const [file,edits] of Object.entries(byFile)){C[file]=results[file];edits.forEach(([, ,done])=>done());}
     document.querySelectorAll('.cms-photo-btn.changed').forEach(b=>{b.classList.remove('changed');b.textContent='🖼 Replace photo';});
-    // 4. colours
-    if(themeChanged()){
-      let sha;try{sha=(await gh('content/theme.json')).sha;}catch(e){if(e.message!=='404')throw e;}
-      await gh('content/theme.json',{method:'PUT',body:JSON.stringify({message:'Update colours (on-page editor)',branch:CMS_BRANCH,
-        ...(sha?{sha}:{}),content:b64(JSON.stringify({...(ed.theme||THEME),fonts:ed.fonts||SITE_FONTS},null,2)+'\n')})});
-      if(ed.theme)THEME={...ed.theme};if(ed.fonts)SITE_FONTS={...ed.fonts};
-    }
-    // 5. individual text / background colours
-    if(stylesChanged()){
-      let sha,cur={text:{},backgrounds:{}};
-      try{const f=await gh('content/styles.json');sha=f.sha;cur=JSON.parse(unb64(f.content));}catch(e){if(e.message!=='404')throw e;}
-      cur.text=cur.text||{};cur.backgrounds=cur.backgrounds||{};cur.fonts=cur.fonts||{};
-      ['text','backgrounds','fonts'].forEach(g=>Object.entries(ed.styles[g]).forEach(([k,v])=>{if(v===null)delete cur[g][k];else cur[g][k]=v;}));
-      await gh('content/styles.json',{method:'PUT',body:JSON.stringify({message:'Update individual colours (on-page editor)',branch:CMS_BRANCH,
-        ...(sha?{sha}:{}),content:b64(JSON.stringify(cur,null,2)+'\n')})});
-      STYLES={text:{...cur.text},backgrounds:{...cur.backgrounds},fonts:{...cur.fonts}};ed.styles={text:{},backgrounds:{},fonts:{}};
-      document.querySelectorAll('.cms-bg-btn.changed').forEach(b=>b.classList.remove('changed'));
-    }
+    if(doTheme){if(ed.theme)THEME={...ed.theme};if(ed.fonts)SITE_FONTS={...ed.fonts};}
+    if(doStyles){const cur=results.__styles;STYLES={text:{...cur.text},backgrounds:{...cur.backgrounds},fonts:{...cur.fonts}};ed.styles={text:{},backgrounds:{},fonts:{}};
+      document.querySelectorAll('.cms-bg-btn.changed').forEach(b=>b.classList.remove('changed'));}
     sb.disabled=false;sb.textContent='Save changes';
-    msg('Saved! The live site updates in about a minute.');
+    msg('Saved! Visitors will see it within a few minutes.');
   }catch(err){
     console.error(err);
     sb.disabled=false;sb.textContent='Save changes';

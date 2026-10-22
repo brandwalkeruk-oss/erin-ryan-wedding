@@ -1,0 +1,7 @@
+# Static site: no build step, publish the repo as-is.
+[build]
+  publish = "."
+  # Skip publishing when a save only changes content or uploaded photos.
+  # The site reads those straight from GitHub, so they don't need a Netlify publish
+  # (each publish costs credits). Exit code 0 = skip, anything else = publish.
+  ignore = "git diff --quiet $CACHED_COMMIT_REF $COMMIT_REF -- . ':(exclude)content' ':(exclude)images/uploads'"
