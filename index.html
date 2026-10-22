@@ -345,7 +345,16 @@ body{transition:opacity .4s}
 .cd-label{font-size:.52rem;margin-top:.45em;color:var(--c-olive);font-weight:500}
 .scroll-cue{color:var(--c-olive);text-shadow:0 0 10px rgba(255,248,235,.9)}
 .scroll-cue span{background:linear-gradient(var(--c-olive),transparent)}
-@media(max-width:500px){.hero-loc{letter-spacing:.14em;font-size:.56rem}}
+/* phones: bigger, with the names clearly the largest */
+@media(max-width:600px){
+  .hero-names{font-size:clamp(3.4rem,17vw,4.6rem);margin:.05em 0 0}
+  .hero-date{font-size:clamp(1.02rem,4.6vw,1.2rem);margin-top:.85em}
+  .hero-divider{margin-top:.9em}
+  .hero-loc{font-size:.66rem;letter-spacing:.12em;line-height:1.7;margin-top:.8em}
+  .countdown{margin-top:1.1em;gap:clamp(14px,5vw,24px)}
+  .cd-num{font-size:clamp(1.7rem,8vw,2.1rem)}
+  .cd-label{font-size:.6rem;letter-spacing:.18em}
+}
 .hero-names .amp{font-family:'Pinyon Script',cursive;font-style:normal;color:var(--c-olive)}
 .eyebrow-underlined{display:inline-block}
 .eyebrow-underlined .eyebrow{margin-right:-.44em}
